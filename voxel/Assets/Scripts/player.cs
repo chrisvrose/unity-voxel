@@ -6,15 +6,18 @@ public class player : MonoBehaviour
 {
     Texture2D crosshairTexture;
     Rect position;
+    public Camera myCamera;
     public short[] inventory;
     public short selected;
     bool[] hasPressed;
-    public const float interact_disance = 10f; 
-
+    public const float interact_disance = 10f;
+    private Vector3 rotate_vector;      //Used by Update to ch
+    private Vector3 force_vector;
     // Use this for initialization
     void Start()
     {
         #region Crosshair
+        Cursor.lockState = CursorLockMode.Locked;
         crosshairTexture = new Texture2D(2, 2, TextureFormat.ARGB32, false);
         position = new Rect((Screen.width - crosshairTexture.width) / 2, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
         //Debug.Log("NAEEE");
@@ -39,7 +42,9 @@ public class player : MonoBehaviour
         StartCoroutine(UpdateFace());
     }
 
-    // Change direction of your face
+    /// <summary>
+    /// Change the face
+    /// </summary>
     IEnumerator UpdateFace()
     {
         Transform a = transform.GetChild(0);
@@ -52,9 +57,19 @@ public class player : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
+    /// <summary>
+    /// Change Rotation of camera and apply a fix for double placement of blocks
+    /// </summary>
     void Update()
     {
+        rotate_vector.Set(-Input.GetAxis("Mouse Y"),Input.GetAxis("Mouse X"),0);
+        myCamera.transform.rotation = Quaternion.Euler(myCamera.transform.rotation.eulerAngles + rotate_vector);
+        //myCamera.transform.Rotate(rotate_vector);
+        force_vector.Set(Input.GetAxis("Horizontal"), Input.GetAxis("Jump"), Input.GetAxis("Vertical"));
+        Debug.Log(force_vector);
+        GetComponent<Rigidbody>().AddForce(force_vector);
+        //GetComponent<Rigidbody>().AddForce();
+        // This pass helps remove double interactions, when the fps is low
         hasPressed[0] = hasPressed[0] || Input.GetMouseButtonDown(0);
         hasPressed[1] = hasPressed[1] || Input.GetMouseButtonDown(1);
         hasPressed[2] = hasPressed[2] || Input.GetKey("1");
@@ -64,12 +79,15 @@ public class player : MonoBehaviour
         hasPressed[6] = hasPressed[6] || Input.GetKey("5");
         //Debug.Log(inventory);
     }
+
+
     public int modifyInventory(blocktypes blocktype, short num_mod)
     {
         inventory[(int)blocktype - 1] += num_mod;
         // Add methods to update block list GUI
         return 1;
     }
+
     IEnumerator placeStuff()
     {
         for(; ; )
