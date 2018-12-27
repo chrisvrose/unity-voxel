@@ -65,10 +65,12 @@ public class player : MonoBehaviour
         rotate_vector.Set(-Input.GetAxis("Mouse Y"),Input.GetAxis("Mouse X"),0);
         myCamera.transform.rotation = Quaternion.Euler(myCamera.transform.rotation.eulerAngles + rotate_vector);
         //myCamera.transform.Rotate(rotate_vector);
-        force_vector.Set(Input.GetAxis("Horizontal"), Input.GetAxis("Jump"), Input.GetAxis("Vertical"));
-        Debug.Log(force_vector);
-        GetComponent<Rigidbody>().AddForce(force_vector);
-        //GetComponent<Rigidbody>().AddForce();
+        force_vector.Set(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        //Debug.Log(force_vector);
+        GetComponent<Rigidbody>().position += myCamera.transform.rotation * (force_vector*Time.deltaTime);
+        GetComponent<Rigidbody>().AddForce(new Vector3(0,Input.GetAxis("Jump"),0),ForceMode.VelocityChange);
+        //if (on) ;
+        //GetComponent<Rigidbody>().AddForce(force_vector,ForceMode.Acceleration);
         // This pass helps remove double interactions, when the fps is low
         hasPressed[0] = hasPressed[0] || Input.GetMouseButtonDown(0);
         hasPressed[1] = hasPressed[1] || Input.GetMouseButtonDown(1);
