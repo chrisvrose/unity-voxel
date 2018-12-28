@@ -24,6 +24,7 @@ public class player : MonoBehaviour
     private Vector3 rotate_vector;      //Used by Update to ch
     private Vector3 movement_vector;
     private Vector3 try_to_move;
+    private float camera_rotation = 0f;
 
     // Use this for initialization
     void Start()
@@ -83,9 +84,11 @@ public class player : MonoBehaviour
         //myCamera.transform.rotation = Quaternion.Euler(myCamera.transform.rotation.eulerAngles + rotate_vector*movement_sensitivity);
 
         // Realistic method
-        transform.Rotate(0, Input.GetAxis("Mouse X"), 0);
-        myCamera.transform.Rotate(-Input.GetAxis("Mouse Y"), 0, 0);
-        //Mathf.Clamp(myCamera.)
+        transform.Rotate(0, Input.GetAxis("Mouse X") * camera_sensitivity, 0);
+        camera_rotation -= Input.GetAxis("Mouse Y") * camera_sensitivity;
+        
+        camera_rotation = Mathf.Clamp(camera_rotation, -89f, 89f);
+        myCamera.transform.localRotation = Quaternion.Euler(camera_rotation,0,0);
         
 
         // init velocity
