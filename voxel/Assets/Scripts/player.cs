@@ -76,17 +76,17 @@ public class player : MonoBehaviour
     /// </summary>
     void Update()
     {
+        //Old method - Rotating Camera
         //Do a small check first? is going more down or up allowed?
-        rotate_vector.Set(-Input.GetAxis("Mouse Y"),Input.GetAxis("Mouse X"),0);
-        //myCamera.transform.rotation = myCamera.transform.rotation * Quaternion.Euler(-Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0) ;
-        myCamera.transform.rotation = Quaternion.Euler(myCamera.transform.rotation.eulerAngles + rotate_vector*movement_sensitivity);
+        //rotate_vector.Set(-Input.GetAxis("Mouse Y"),Input.GetAxis("Mouse X"),0);
+        ////myCamera.transform.rotation = myCamera.transform.rotation * Quaternion.Euler(-Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0) ;
+        //myCamera.transform.rotation = Quaternion.Euler(myCamera.transform.rotation.eulerAngles + rotate_vector*movement_sensitivity);
 
-        //if (myCamera.transform.rotation.eulerAngles.x > 85)
-        //    myCamera.transform.rotation = Quaternion.Euler(85, myCamera.transform.rotation.eulerAngles.y, myCamera.transform.rotation.eulerAngles.z);
-
-
-        //myCamera.transform.Rotate(rotate_vector);
-        //      force_vector.Set(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        // Realistic method
+        transform.Rotate(0, Input.GetAxis("Mouse X"), 0);
+        myCamera.transform.Rotate(-Input.GetAxis("Mouse Y"), 0, 0);
+        //Mathf.Clamp(myCamera.)
+        
 
         // init velocity
         
@@ -98,13 +98,14 @@ public class player : MonoBehaviour
         try_to_move = Vector3.ProjectOnPlane(try_to_move, Vector3.up).normalized * try_to_move.magnitude;
         // v = u-gt
         try_to_move.y = buff -  gravity * Time.deltaTime;
-        Debug.Log(try_to_move.y);
+        //Debug.Log(try_to_move.y);
 
         //Do jump stuff and reset y velocity
         if (character.isGrounded) {
             try_to_move.y = 0+Input.GetAxis("Jump")*jump_sensitivity;
             
         }
+        // dS = vdt
         character.Move(try_to_move * Time.deltaTime);
 
 
