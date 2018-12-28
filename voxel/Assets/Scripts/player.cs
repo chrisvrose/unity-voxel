@@ -77,12 +77,6 @@ public class player : MonoBehaviour
     /// </summary>
     void Update()
     {
-        //Old method - Rotating Camera
-        //Do a small check first? is going more down or up allowed?
-        //rotate_vector.Set(-Input.GetAxis("Mouse Y"),Input.GetAxis("Mouse X"),0);
-        ////myCamera.transform.rotation = myCamera.transform.rotation * Quaternion.Euler(-Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0) ;
-        //myCamera.transform.rotation = Quaternion.Euler(myCamera.transform.rotation.eulerAngles + rotate_vector*movement_sensitivity);
-
         // Realistic method
         transform.Rotate(0, Input.GetAxis("Mouse X") * camera_sensitivity, 0);
         camera_rotation -= Input.GetAxis("Mouse Y") * camera_sensitivity;
