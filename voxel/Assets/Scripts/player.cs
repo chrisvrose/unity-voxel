@@ -6,13 +6,25 @@ public class player : MonoBehaviour
 {
     Texture2D crosshairTexture;
     Rect position;
+
     public Camera myCamera;
+    public CharacterController character;
+
+
+    public const float interact_disance = 10f;
+    public float camera_sensitivity;
+    public float movement_sensitivity;
+    public float jump_sensitivity;
+    public float gravity;
+
     public short[] inventory;
     public short selected;
     bool[] hasPressed;
-    public const float interact_disance = 10f;
+
     private Vector3 rotate_vector;      //Used by Update to ch
-    private Vector3 force_vector;
+    private Vector3 movement_vector;
+    private Vector3 try_to_move;
+
     // Use this for initialization
     void Start()
     {
@@ -37,6 +49,8 @@ public class player : MonoBehaviour
         selected = 1;
         for (int i = 0; i > 5; i++) inventory[i] = 5;
         #endregion
+        try_to_move = new Vector3(0, 0, 0);
+        character = GetComponent<CharacterController>();
         hasPressed = new bool[7];
         StartCoroutine(placeStuff());
         StartCoroutine(UpdateFace());
@@ -62,15 +76,40 @@ public class player : MonoBehaviour
     /// </summary>
     void Update()
     {
+        //Do a small check first? is going more down or up allowed?
         rotate_vector.Set(-Input.GetAxis("Mouse Y"),Input.GetAxis("Mouse X"),0);
-        myCamera.transform.rotation = Quaternion.Euler(myCamera.transform.rotation.eulerAngles + rotate_vector);
+        //myCamera.transform.rotation = myCamera.transform.rotation * Quaternion.Euler(-Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0) ;
+        myCamera.transform.rotation = Quaternion.Euler(myCamera.transform.rotation.eulerAngles + rotate_vector*movement_sensitivity);
+
+        //if (myCamera.transform.rotation.eulerAngles.x > 85)
+        //    myCamera.transform.rotation = Quaternion.Euler(85, myCamera.transform.rotation.eulerAngles.y, myCamera.transform.rotation.eulerAngles.z);
+
+
         //myCamera.transform.Rotate(rotate_vector);
-        force_vector.Set(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        //Debug.Log(force_vector);
-        GetComponent<Rigidbody>().position += myCamera.transform.rotation * (force_vector*Time.deltaTime);
-        GetComponent<Rigidbody>().AddForce(new Vector3(0,Input.GetAxis("Jump"),0),ForceMode.VelocityChange);
-        //if (on) ;
-        //GetComponent<Rigidbody>().AddForce(force_vector,ForceMode.Acceleration);
+        //      force_vector.Set(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+
+        // init velocity
+        
+        float buff = try_to_move.y;
+        try_to_move.Set(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        try_to_move = myCamera.transform.rotation * (try_to_move * movement_sensitivity);
+        
+        // Move the spherical coordinates into the x-z plane
+        try_to_move = Vector3.ProjectOnPlane(try_to_move, Vector3.up).normalized * try_to_move.magnitude;
+        // v = u-gt
+        try_to_move.y = buff -  gravity * Time.deltaTime;
+        Debug.Log(try_to_move.y);
+
+        //Do jump stuff and reset y velocity
+        if (character.isGrounded) {
+            try_to_move.y = 0+Input.GetAxis("Jump")*jump_sensitivity;
+            
+        }
+        character.Move(try_to_move * Time.deltaTime);
+
+
+
+
         // This pass helps remove double interactions, when the fps is low
         hasPressed[0] = hasPressed[0] || Input.GetMouseButtonDown(0);
         hasPressed[1] = hasPressed[1] || Input.GetMouseButtonDown(1);
@@ -83,13 +122,23 @@ public class player : MonoBehaviour
     }
 
 
-    public int modifyInventory(blocktypes blocktype, short num_mod)
+    /// <summary>
+    /// Add and remove contents of the inventory
+    /// </summary>
+    /// <param name="blocktype">Block enum val</param>
+    /// <param name="num_mod">How much of a change</param>
+    /// <returns>bool of whether it was possible</returns>
+    public bool modifyInventory(blocktypes blocktype, short num_mod)
     {
         inventory[(int)blocktype - 1] += num_mod;
         // Add methods to update block list GUI
-        return 1;
+        return true;
     }
 
+    /// <summary>
+    /// Every now and again this enumerator will trigger and do the placements and stuff. 
+    /// </summary>
+    /// <returns></returns>
     IEnumerator placeStuff()
     {
         for(; ; )
