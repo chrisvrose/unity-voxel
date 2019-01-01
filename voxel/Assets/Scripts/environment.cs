@@ -47,7 +47,7 @@ public class environment : MonoBehaviour
         data.timeslots = (short)(data.gendegen_rate / 4);
         data.blocklayermask = 1 << 9 | 1<<10;
         data.hardblocklayermask = 1 << 9;
-        Debug.Log("Rate:" + data.gendegen_rate);
+        //Debug.Log("Rate:" + data.gendegen_rate);
 
         generated_chunks = new List<Vector2>();
         #endregion
@@ -80,7 +80,7 @@ public class environment : MonoBehaviour
             {
                 // Compute a Wavy height. There is a /5f of intensity 5 and a /20f of intensity 20
                 //short height = (short)(Mathf.PerlinNoise((chunkpoint.x + x) / 5f, (chunkpoint.y + z) / 5f) * 5 + Mathf.PerlinNoise(x / 20f, z / 20f) * 20);
-                short height = chunkManager.calculateHeight(Genesis_Displacement.x +chunkpoint.x + x, Genesis_Displacement.y + chunkpoint.y + z);
+                short height = chunkManager.CalculateHeight(Genesis_Displacement.x +chunkpoint.x + x, Genesis_Displacement.y + chunkpoint.y + z);
                 //print(height);
                 Block.Blockinit(blocktypes.Grass, new Vector3(chunkpoint.x + x, height--, chunkpoint.y + z));      //Build Grass and remove 1 from height
                 //float height = Random.Range(0, SizeY);

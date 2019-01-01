@@ -15,6 +15,14 @@ public class Block : MonoBehaviour
         sblock.GetComponent<Block>().setBlockType(block);
         return sblock;
     }
+    public static GameObject Blockinit(blocktypes block, Vector3 pos, Transform parent)
+    {
+        GameObject sblock = Instantiate(data.block, pos, Quaternion.identity, parent);
+        sblock.GetComponent<Block>().setBlockType(block);
+        return sblock;
+    }
+
+
     public static void BlockDestroy(GameObject block_to_del)
     {
 
