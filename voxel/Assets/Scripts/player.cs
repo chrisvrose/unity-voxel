@@ -141,9 +141,9 @@ public class player : MonoBehaviour
     {
         for(; ; )
         {
-            if(hasPressed[2]|| hasPressed[3] || hasPressed[4] || hasPressed[5] || hasPressed[6])
+            if( hasPressed[2]|| hasPressed[3] || hasPressed[4] || hasPressed[5] || hasPressed[6] )
             {
-                selected = (short) ( hasPressed[2] ? 1 : (hasPressed[3]?2:(hasPressed[4]?3:(hasPressed[5]?4:(hasPressed[6]?5:1)))) );
+                selected = (short) ( hasPressed[2] ? 1 : (hasPressed[3] ? 2 :(hasPressed[4] ? 3 : (hasPressed[5] ? 4 : (hasPressed[6] ? 5 : 1 )))) );
                 
             }
             if (hasPressed[0] || hasPressed[1])

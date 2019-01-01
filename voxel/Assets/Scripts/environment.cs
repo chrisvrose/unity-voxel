@@ -6,8 +6,6 @@ public class environment : MonoBehaviour
 {
     GameObject player;
     //GameObject defblock;
-    [Range(1, 64)]
-    public short chunk_size;
 
     [Range(1, 8)]
     public int generate_radius;
@@ -18,10 +16,6 @@ public class environment : MonoBehaviour
     public int seedf;
 
     Vector2 Genesis_Displacement;
-
-    float[] Genesis_scale;
-
-    int[] Genesis_intesity;
 
     List<Vector2> generated_chunks;
 
@@ -56,9 +50,6 @@ public class environment : MonoBehaviour
         Debug.Log("Rate:" + data.gendegen_rate);
 
         generated_chunks = new List<Vector2>();
-        //Structure - Divider,intensity
-        Genesis_scale = new[] { 8f , 16f };
-        Genesis_intesity = new[] { 2 , 16 };
         #endregion
 
         instancesPerFrame = data.gendegen_rate;
@@ -75,19 +66,21 @@ public class environment : MonoBehaviour
     {
 
     }
+
+
     IEnumerator generate(Vector2 chunkpoint)
     {
         // Instantiate
         generated_chunks.Add(chunkpoint);
         short numberOfInstances = 0;
 
-        for (int x = 0; x < chunk_size; x++)
+        for (int x = 0; x < chunkManager.ChunkSize; x++)
         {
-            for (int z = 0; z < chunk_size; z++)
+            for (int z = 0; z < chunkManager.ChunkSize; z++)
             {
                 // Compute a Wavy height. There is a /5f of intensity 5 and a /20f of intensity 20
                 //short height = (short)(Mathf.PerlinNoise((chunkpoint.x + x) / 5f, (chunkpoint.y + z) / 5f) * 5 + Mathf.PerlinNoise(x / 20f, z / 20f) * 20);
-                short height = calculateHeight(Genesis_Displacement.x +chunkpoint.x + x, Genesis_Displacement.y + chunkpoint.y + z);
+                short height = chunkManager.calculateHeight(Genesis_Displacement.x +chunkpoint.x + x, Genesis_Displacement.y + chunkpoint.y + z);
                 //print(height);
                 Block.Blockinit(blocktypes.Grass, new Vector3(chunkpoint.x + x, height--, chunkpoint.y + z));      //Build Grass and remove 1 from height
                 //float height = Random.Range(0, SizeY);
@@ -119,15 +112,7 @@ public class environment : MonoBehaviour
         }
     }
 
-    short calculateHeight(float x,float y)
-    {
-        short height = 0;
-        for (int i = 0; i < Genesis_scale.Length; i++)
-        {
-            height += (short)(Mathf.PerlinNoise(x / Genesis_scale[i], y / Genesis_scale[i]) * Genesis_intesity[i]);
-        }
-        return height;
-    }
+
     IEnumerator CycleTime()
     {
         while (true)
@@ -141,19 +126,24 @@ public class environment : MonoBehaviour
             yield return new WaitForSeconds(.1f);
         }
     }
+
+    /// <summary>
+    /// Check if generation required, call required functions then
+    /// </summary>
+    /// <returns></returns>
     IEnumerator GenerateNew()
     {
         Vector2 playerchunka,generateat;
         while (true)
         {
             //Get current chunk player is in
-            playerchunka = new Vector2((int)(data.player.transform.position.x / chunk_size), (int)(data.player.transform.position.z / chunk_size) );
+            playerchunka = new Vector2((int)(data.player.transform.position.x / chunkManager.ChunkSize), (int)(data.player.transform.position.z / chunkManager.ChunkSize) );
             
             for(int x = -generate_radius; x <= generate_radius; x++)
             {
                 for(int y = -generate_radius; y <= generate_radius; y++)
                 {
-                    generateat = (playerchunka + new Vector2(x, y))*chunk_size;
+                    generateat = (playerchunka + new Vector2(x, y))*chunkManager.ChunkSize;
                     
                     if (!generated_chunks.Contains(generateat)) StartCoroutine(generate(generateat));
                     yield return new WaitForSeconds(.05f);
