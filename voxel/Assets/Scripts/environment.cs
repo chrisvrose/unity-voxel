@@ -15,10 +15,6 @@ public class environment : MonoBehaviour
     [Range(-1, 9999)]
     public int seedf;
 
-    Vector2 Genesis_Displacement;
-
-    List<Vector2> generated_chunks;
-
     // Use this for initialization
     void Start()
     {
@@ -33,10 +29,9 @@ public class environment : MonoBehaviour
             PlayerPrefs.SetInt("seed", Random.Range(0, 9999));
         }
 
-        //Generate initial point from seed
-        Genesis_Displacement = new Vector2(seedf % 100, seedf / 100);
 
         #region Load, set and print data
+        data.chunkPrefab = Resources.Load("Prefab/Chunk") as GameObject;
         data.player_prefab = Resources.Load("Prefab/Player") as GameObject;
         player = data.player_prefab;
         data.player = player;
@@ -54,8 +49,9 @@ public class environment : MonoBehaviour
 
         instancesPerFrame = data.gendegen_rate;
         //Start work
-        StartCoroutine(generate(Vector2.zero));
-
+        //StartCoroutine(generate(Vector2.zero));
+        data.player = Instantiate(data.player_prefab, new Vector3(0, 35, 0), Quaternion.identity) as GameObject;
+        StartCoroutine(Generation());
 
         StartCoroutine(CycleTime());
         //StartCoroutine(generate(new Vector2(16, 0)));
@@ -65,51 +61,6 @@ public class environment : MonoBehaviour
     void Update()
     {
 
-    }
-
-
-    IEnumerator generate(Vector2 chunkpoint)
-    {
-        // Instantiate
-        generated_chunks.Add(chunkpoint);
-        short numberOfInstances = 0;
-
-        for (int x = 0; x < chunkManager.ChunkSize; x++)
-        {
-            for (int z = 0; z < chunkManager.ChunkSize; z++)
-            {
-                // Compute a Wavy height. There is a /5f of intensity 5 and a /20f of intensity 20
-                //short height = (short)(Mathf.PerlinNoise((chunkpoint.x + x) / 5f, (chunkpoint.y + z) / 5f) * 5 + Mathf.PerlinNoise(x / 20f, z / 20f) * 20);
-                short height = chunkManager.CalculateHeight(Genesis_Displacement.x +chunkpoint.x + x, Genesis_Displacement.y + chunkpoint.y + z);
-                //print(height);
-                Block.Blockinit(blocktypes.Grass, new Vector3(chunkpoint.x + x, height--, chunkpoint.y + z));      //Build Grass and remove 1 from height
-                //float height = Random.Range(0, SizeY);
-                for (int y = 0; y <= height; y++)
-                {
-                    // Chuck in a block
-                    Block.Blockinit(blocktypes.Dirt, new Vector3(chunkpoint.x + x, y, chunkpoint.y + z));
-                    // Increment numberOfInstances
-                }
-                numberOfInstances++;
-
-                // If the number of instances per frame was met
-                if (numberOfInstances == instancesPerFrame)
-                {
-                    // Reset numberOfInstances
-                    numberOfInstances = 0;
-                    // Wait for next frame
-                    yield return new WaitForEndOfFrame();
-                }
-            }
-        }
-
-        //First time generation
-        if (chunkpoint == Vector2.zero)
-        {
-            data.player = Instantiate(player, new Vector3(chunkpoint.x, 35, chunkpoint.y), Quaternion.identity) as GameObject;
-            StartCoroutine(GenerateNew());
-            data.player_cam = data.player.GetComponentInChildren<Camera>();
-        }
     }
 
 
@@ -131,21 +82,21 @@ public class environment : MonoBehaviour
     /// Check if generation required, call required functions then
     /// </summary>
     /// <returns></returns>
-    IEnumerator GenerateNew()
+    IEnumerator Generation()
     {
-        Vector2 playerchunka,generateat;
+        Vector3 playerchunka,generateat;
         while (true)
         {
             //Get current chunk player is in
-            playerchunka = new Vector2((int)(data.player.transform.position.x / chunkManager.ChunkSize), (int)(data.player.transform.position.z / chunkManager.ChunkSize) );
+            playerchunka = new Vector3((int)(data.player.transform.position.x / chunkManager.ChunkSize),0, (int)(data.player.transform.position.z / chunkManager.ChunkSize) );
             
             for(int x = -generate_radius; x <= generate_radius; x++)
             {
                 for(int y = -generate_radius; y <= generate_radius; y++)
                 {
-                    generateat = (playerchunka + new Vector2(x, y))*chunkManager.ChunkSize;
-                    
-                    if (!generated_chunks.Contains(generateat)) StartCoroutine(generate(generateat));
+                    generateat = (playerchunka + new Vector3(x,0, y))*chunkManager.ChunkSize;
+
+                    chunkManager.CreateChunk(generateat);//StartCoroutine(generate(generateat));
                     yield return new WaitForSeconds(.05f);
                 }
             }

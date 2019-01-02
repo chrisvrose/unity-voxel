@@ -321,7 +321,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cf86f205e7a4684cb5b45f0558b3974, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chunk_size: 16
   generate_radius: 2
   seedf: 1001
 --- !u!108 &734953162

@@ -151,7 +151,7 @@ public class player : MonoBehaviour
                 //Debug.Log("Recorded " + hasPressed[0]);
                 //int button = hasPressed[0] ? 0 : 1;
                 RaycastHit hit;
-                Ray ray = data.player_cam.ScreenPointToRay(new Vector3(data.player_cam.pixelWidth / 2, data.player_cam.pixelHeight / 2, 0));
+                Ray ray = myCamera.ScreenPointToRay(new Vector3(myCamera.pixelWidth / 2, myCamera.pixelHeight / 2, 0));
                 if (Physics.Raycast(ray, out hit, interact_disance, data.blocklayermask))
                 {
                     Transform hit_object = hit.transform;
