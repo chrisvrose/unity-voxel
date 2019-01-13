@@ -15,6 +15,7 @@ public class environment : MonoBehaviour
     [Range(-1, 9999)]
     public int seedf;
 
+    List<GameObject> ActiveChunks = new List<GameObject>();
     // Use this for initialization
     void Start()
     {
@@ -43,8 +44,8 @@ public class environment : MonoBehaviour
         data.blocklayermask = 1 << 9 | 1<<10;
         data.hardblocklayermask = 1 << 9;
         //Debug.Log("Rate:" + data.gendegen_rate);
-
-        generated_chunks = new List<Vector2>();
+        
+        
         #endregion
 
         instancesPerFrame = data.gendegen_rate;
@@ -104,5 +105,15 @@ public class environment : MonoBehaviour
             yield return new WaitForSeconds(.5f);
             
         }
+    }
+
+    /// <summary>
+    /// If player is too far off, disable chunks, and reenable them accordingly.
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator ChangeChunkState()
+    {
+        
+        yield return new WaitForEndOfFrame();
     }
 }

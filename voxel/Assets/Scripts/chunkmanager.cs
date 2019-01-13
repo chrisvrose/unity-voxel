@@ -13,19 +13,30 @@ public class chunkManager : MonoBehaviour {
     private static List<GameObject> Chunks = new List<GameObject>();
     private static List<Vector3> ChunksLocation = new List<Vector3>();
 
-    public static int CreateChunk(Vector3 location)
+    public static GameObject CreateChunk(Vector3 location)
     {
         if (!ChunksLocation.Contains(location))
         {
             GameObject chunk =  Instantiate(data.chunkPrefab, location,Quaternion.identity);
             Chunks.Add(chunk);
             ChunksLocation.Add(location);
-            return 1;
+            return chunk;
         } else {
-            return 0;
+            return null;
         }
         
         
+    }
+    public static GameObject IsChunk(Vector3 location)
+    {
+        if (chunkManager.ChunksLocation.Contains(location))
+        {
+            return chunkManager.Chunks.Find(o => location == o.GetComponent<Transform>().position);
+        }
+        else
+        {
+            return null;
+        }
     }
     void Start()
     {
