@@ -7,7 +7,7 @@ public class chunkManager : MonoBehaviour {
     static readonly int[] GenesisIntesity = { 2,16 };
     static readonly float[] GenesisScale = { 8f, 16f };
     public static short ChunkSize = 16;
-    public static readonly short seedf = 567;
+    public static readonly short seedf = 3567;
     public static readonly Vector2 GenesisDisplacement = new Vector2(seedf % 100, seedf / 100);
     public static readonly int generateRadius = 2;
     private static List<GameObject> Chunks = new List<GameObject>();

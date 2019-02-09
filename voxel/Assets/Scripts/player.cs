@@ -15,13 +15,13 @@ public class player : MonoBehaviour
     public float camera_sensitivity;
     public float movement_sensitivity;
     public float jump_sensitivity;
-    public float gravity;
+    public const float gravity = 9.81f;
 
     public short[] inventory;
     public short selected;
     bool[] hasPressed;
 
-    private Vector3 rotate_vector;      //Used by Update to ch
+    private Vector3 rotate_vector;
     private Vector3 movement_vector;
     private Vector3 try_to_move;
     private float camera_rotation = 0f;
@@ -79,7 +79,7 @@ public class player : MonoBehaviour
         transform.Rotate(0, Input.GetAxis("Mouse X") * camera_sensitivity, 0);
         camera_rotation -= Input.GetAxis("Mouse Y") * camera_sensitivity;
         
-        camera_rotation = Mathf.Clamp(camera_rotation, -89f, 89f);
+        camera_rotation = Mathf.Clamp(camera_rotation, -89.8f, 89.8f);
         myCamera.transform.localRotation = Quaternion.Euler(camera_rotation,0,0);
         
 

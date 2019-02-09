@@ -10,7 +10,6 @@ public class environment : MonoBehaviour
     [Range(1, 8)]
     public int generate_radius;
 
-    short instancesPerFrame;
 
     [Range(-1, 9999)]
     public int seedf;
@@ -20,6 +19,7 @@ public class environment : MonoBehaviour
     void Start()
     {
 
+        #region Check for seed, and generate one if none
         if (PlayerPrefs.HasKey("seed") && seedf == -1)
         {
             data.seed = PlayerPrefs.GetInt("seed");
@@ -29,7 +29,7 @@ public class environment : MonoBehaviour
         {
             PlayerPrefs.SetInt("seed", Random.Range(0, 9999));
         }
-
+        #endregion
 
         #region Load Prefabs and set generation timeslot intervals
         data.chunkPrefab = Resources.Load("Prefab/Chunk") as GameObject;
@@ -46,12 +46,10 @@ public class environment : MonoBehaviour
         
         #endregion
 
-        instancesPerFrame = data.gendegen_rate;
         //Start work
-        //StartCoroutine(generate(Vector2.zero));
         data.player = Instantiate(data.player_prefab, new Vector3(0, 35, 0), Quaternion.identity) as GameObject;
-        StartCoroutine(Generation());
 
+        StartCoroutine(Generation());
         StartCoroutine(CycleTime());
         //StartCoroutine(generate(new Vector2(16, 0)));
     }
