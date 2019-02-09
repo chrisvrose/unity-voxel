@@ -17,6 +17,6 @@ public static class data
     public static int seed;
     public static short gendegen_rate;
     public static short timeslots;
-    public static int hardblocklayermask;
-    public static int blocklayermask;
+    public static int hardblocklayermask = 1 << 9;
+    public static int blocklayermask = 1 << 9 | 1 << 10;
 }

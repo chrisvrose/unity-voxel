@@ -33,12 +33,10 @@ public class player : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         crosshairTexture = new Texture2D(2, 2, TextureFormat.ARGB32, false);
         position = new Rect((Screen.width - crosshairTexture.width) / 2, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
-        //Debug.Log("NAEEE");
         for (int i = 0; i < 2; i++)
         {
             for (int j = 0; j < 2; j++)
             {
-                //Debug.Log("NAEEE");
                 crosshairTexture.SetPixel(i, j, Color.white);
             }
 
@@ -58,7 +56,7 @@ public class player : MonoBehaviour
     }
 
     /// <summary>
-    /// Change the face
+    /// Change the face every now and then.
     /// </summary>
     IEnumerator UpdateFace()
     {

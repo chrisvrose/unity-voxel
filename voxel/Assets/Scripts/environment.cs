@@ -31,7 +31,7 @@ public class environment : MonoBehaviour
         }
 
 
-        #region Load, set and print data
+        #region Load Prefabs and set generation timeslot intervals
         data.chunkPrefab = Resources.Load("Prefab/Chunk") as GameObject;
         data.player_prefab = Resources.Load("Prefab/Player") as GameObject;
         player = data.player_prefab;
@@ -41,8 +41,6 @@ public class environment : MonoBehaviour
         data.block_particle = Resources.Load("Prefab/particle_block") as GameObject;
         data.gendegen_rate = (short)(1f / (4 * Time.deltaTime));
         data.timeslots = (short)(data.gendegen_rate / 4);
-        data.blocklayermask = 1 << 9 | 1<<10;
-        data.hardblocklayermask = 1 << 9;
         //Debug.Log("Rate:" + data.gendegen_rate);
         
         
@@ -64,7 +62,10 @@ public class environment : MonoBehaviour
 
     }
 
-
+    /// <summary>
+    /// Cycle through day and night cycles. Change light intensities and ambience to make it look better
+    /// </summary>
+    /// <returns></returns>
     IEnumerator CycleTime()
     {
         while (true)

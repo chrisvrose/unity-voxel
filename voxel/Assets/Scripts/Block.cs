@@ -5,16 +5,17 @@ using UnityEngine;
 
 public class Block : MonoBehaviour
 {
-    //GameObject nblock;
-    //Represents block interactions
     public blocktypes type;
     public Ray[] ray;
+
+    //TODO:Remove; all blocks must have a parent chunk
     public static GameObject Blockinit(blocktypes block, Vector3 pos)
     {
         GameObject sblock = Instantiate(data.block, pos, Quaternion.identity);
         sblock.GetComponent<Block>().setBlockType(block);
         return sblock;
     }
+
     public static GameObject Blockinit(blocktypes block, Vector3 pos, Transform parent)
     {
         GameObject sblock = Instantiate(data.block, pos, Quaternion.identity, parent);
@@ -44,6 +45,11 @@ public class Block : MonoBehaviour
         }
         Destroy(block_to_del);
     }
+
+    /// <summary>
+    /// Upon generation, call function to set the block type.
+    /// </summary>
+    /// <param name="block"></param>
     private void setBlockType(blocktypes block)
     {
         type = block;
@@ -65,20 +71,8 @@ public class Block : MonoBehaviour
         //renderer.
 
     }
-    void Start()
-    {
-        // As block cannot change position we make it part of the data
-        ray = new Ray[6];
-        ray[0] = new Ray(transform.position, transform.up);
-        ray[1] = new Ray(transform.position, -transform.up);
-        ray[2] = new Ray(transform.position, transform.forward);
-        ray[3] = new Ray(transform.position, -transform.forward);
-        ray[4] = new Ray(transform.position, transform.right);
-        ray[5] = new Ray(transform.position, -transform.right);
 
-        StartCoroutine(FallAsleep());
-        //gameObject.SetActive(false);
-    }
+
     public bool changeStateIfCave(bool overr = false)
     {
 
@@ -97,12 +91,32 @@ public class Block : MonoBehaviour
         return covered;
         //Debug.Log(stat);
     }
+
     public blocktypes getBlockType()
     {
         return (blocktypes)int.Parse(GetComponent<Renderer>().material.name);
     }
 
-    // Check when sleeping is possible, and if, do it
+    void Start()
+    {
+        // As block cannot change position we make it part of the data
+        ray = new Ray[6] {
+            new Ray(transform.position, transform.up),
+            new Ray(transform.position, -transform.up),
+            new Ray(transform.position, transform.forward),
+            new Ray(transform.position, -transform.forward),
+            new Ray(transform.position, transform.right),
+            new Ray(transform.position, -transform.right)
+        };
+
+        StartCoroutine(FallAsleep());
+        //gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// Check if surrounded, and sleep
+    /// </summary>
+    /// <returns></returns>
     IEnumerator FallAsleep()
     {
         //yield return new WaitForEndOfFrame();
