@@ -56,6 +56,15 @@ public class player : MonoBehaviour
     }
 
     /// <summary>
+    /// GUI crosshair
+    /// </summary>
+    void OnGUI()
+    {
+        GUI.DrawTexture(position, crosshairTexture);
+    }
+
+
+    /// <summary>
     /// Change the face every now and then.
     /// </summary>
     IEnumerator UpdateFace()
@@ -167,9 +176,5 @@ public class player : MonoBehaviour
 
             yield return new WaitForSeconds(0.25f);
         }
-    }
-    void OnGUI()
-    {
-        GUI.DrawTexture(position, crosshairTexture);
     }
 }

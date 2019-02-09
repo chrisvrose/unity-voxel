@@ -34,24 +34,17 @@ public class environment : MonoBehaviour
         #region Load Prefabs and set generation timeslot intervals
         data.chunkPrefab = Resources.Load("Prefab/Chunk") as GameObject;
         data.player_prefab = Resources.Load("Prefab/Player") as GameObject;
-        player = data.player_prefab;
-        data.player = player;
         data.block = Resources.Load("Prefab/Block") as GameObject;
-        //defblock = data.block;
         data.block_particle = Resources.Load("Prefab/particle_block") as GameObject;
+
         data.gendegen_rate = (short)(1f / (4 * Time.deltaTime));
         data.timeslots = (short)(data.gendegen_rate / 4);
-        //Debug.Log("Rate:" + data.gendegen_rate);
-        
-        
         #endregion
 
         //Start work
         data.player = Instantiate(data.player_prefab, new Vector3(0, 35, 0), Quaternion.identity) as GameObject;
-
         StartCoroutine(Generation());
         StartCoroutine(CycleTime());
-        //StartCoroutine(generate(new Vector2(16, 0)));
     }
 
     // Update is called once per frame
