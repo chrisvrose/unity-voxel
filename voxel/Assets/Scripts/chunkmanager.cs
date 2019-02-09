@@ -13,6 +13,16 @@ public class chunkManager : MonoBehaviour {
     private static List<GameObject> Chunks = new List<GameObject>();
     private static List<Vector3> ChunksLocation = new List<Vector3>();
 
+    /// <summary>
+    /// Convert real space into chunk space
+    /// </summary>
+    /// <param name="realSpace"></param>
+    /// <returns>Vector of the Chunk space coordinates of the chunk(if/not exists)</returns>
+    public static Vector3 GetChunkSpace(Vector3 realSpace)
+    {
+        return new Vector3((int)(realSpace.x / ChunkSize), 0, (int)(realSpace.z / ChunkSize));
+    }
+
     public static GameObject CreateChunk(Vector3 location)
     {
         if (!ChunksLocation.Contains(location))
@@ -27,6 +37,7 @@ public class chunkManager : MonoBehaviour {
         
         
     }
+
     public static GameObject IsChunk(Vector3 location)
     {
         if (chunkManager.ChunksLocation.Contains(location))
@@ -38,6 +49,17 @@ public class chunkManager : MonoBehaviour {
             return null;
         }
     }
+
+    public static short CalculateHeight(float x, float y)
+    {
+        short height = 0;
+        for (int i = 0; i < GenesisScale.Length; i++)
+        {
+            height += (short)(Mathf.PerlinNoise(x / GenesisScale[i], y / GenesisScale[i]) * GenesisIntesity[i]);
+        }
+        return height;
+    }
+
     void Start()
     {
         // Well, we have created a new chunk. Time to generate it.
@@ -45,6 +67,7 @@ public class chunkManager : MonoBehaviour {
         StartCoroutine(Generate(transform));
         // Welp, all done
     }
+
     void Update()
     {
         
@@ -96,13 +119,4 @@ public class chunkManager : MonoBehaviour {
     }
 
 
-    public static short CalculateHeight(float x, float y)
-    {
-        short height = 0;
-        for (int i = 0; i < GenesisScale.Length; i++)
-        {
-            height += (short)(Mathf.PerlinNoise(x / GenesisScale[i], y / GenesisScale[i]) * GenesisIntesity[i]);
-        }
-        return height;
-    }
 }

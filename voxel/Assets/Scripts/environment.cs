@@ -89,7 +89,7 @@ public class environment : MonoBehaviour
         while (true)
         {
             //Get current chunk player is in
-            playerchunka = new Vector3((int)(data.player.transform.position.x / chunkManager.ChunkSize),0, (int)(data.player.transform.position.z / chunkManager.ChunkSize) );
+            playerchunka = chunkManager.GetChunkSpace(data.player.transform.position);
             
             for(int x = -generate_radius; x <= generate_radius; x++)
             {
