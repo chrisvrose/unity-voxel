@@ -8,14 +8,6 @@ public class Block : MonoBehaviour
     public blocktypes type;
     public Ray[] ray;
 
-    //TODO:Remove; all blocks must have a parent chunk
-    public static GameObject Blockinit(blocktypes block, Vector3 pos)
-    {
-        GameObject sblock = Instantiate(data.block, pos, Quaternion.identity);
-        sblock.GetComponent<Block>().setBlockType(block);
-        return sblock;
-    }
-
     public static GameObject Blockinit(blocktypes block, Vector3 pos, Transform parent)
     {
         GameObject sblock = Instantiate(data.block, pos, Quaternion.identity, parent);

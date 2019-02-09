@@ -156,7 +156,7 @@ public class player : MonoBehaviour
                     //Debug.Log(hit.normal);
                     Vector3 place_pos = hit_object.position + hit.normal;
                     if (!hasPressed[0])
-                        Block.Blockinit((blocktypes) selected, place_pos);
+                        Block.Blockinit((blocktypes) selected, place_pos, chunkManager.IsChunk(chunkManager.GetChunkSpace(place_pos)).transform);
                     else
                         Block.BlockDestroy(hit.transform.gameObject);
                 }
