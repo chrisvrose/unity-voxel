@@ -14,6 +14,7 @@ public class environment : MonoBehaviour
     [Range(-1, 9999)]
     public int seedf;
 
+    List<GameObject> OldChunks = new List<GameObject>();
     List<GameObject> ActiveChunks = new List<GameObject>();
     // Use this for initialization
     void Start()
@@ -45,6 +46,7 @@ public class environment : MonoBehaviour
         data.player = Instantiate(data.player_prefab, new Vector3(0, 35, 0), Quaternion.identity) as GameObject;
         StartCoroutine(Generation());
         StartCoroutine(CycleTime());
+        StartCoroutine(ChangeChunkState());
     }
 
     // Update is called once per frame
@@ -105,7 +107,45 @@ public class environment : MonoBehaviour
     /// <returns></returns>
     IEnumerator ChangeChunkState()
     {
-        
-        yield return new WaitForEndOfFrame();
+
+        while (true)
+        {
+            //Debug.Log(chunkManager.GetChunkSpace(data.player.transform.position));
+            for (int x = -generate_radius; x <= generate_radius; x++)
+            {
+                for (int y = -generate_radius; y <= generate_radius; y++)
+                {
+                    GameObject i = chunkManager.IsChunk(chunkManager.GetChunkRealSpace(data.player.transform.position) + new Vector3(x, 0, y) * chunkManager.ChunkSize);
+                    if (i)
+                    {
+                        
+                        ActiveChunks.Add(i);
+                    }
+                }
+
+            }
+
+            //Actively gimp
+            foreach(GameObject x in ActiveChunks)
+            {
+                if (OldChunks.Contains(x))
+                    OldChunks.Remove(x);
+            }
+            
+
+            //Debug.Log(OldChunks.Count);
+
+            foreach (GameObject c in ActiveChunks)
+                c.GetComponent<chunkManager>().changeState(true);
+
+            foreach (GameObject c in OldChunks)
+                c.GetComponent<chunkManager>().changeState(false);
+
+            OldChunks.Clear();
+            //Debug.Log(OldChunks.Count);
+            OldChunks.AddRange(ActiveChunks);
+            ActiveChunks.Clear();
+            yield return new WaitForEndOfFrame();
+        }
     }
 }

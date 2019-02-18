@@ -12,7 +12,9 @@ public class chunkManager : MonoBehaviour {
     public static readonly int generateRadius = 2;
     private static List<GameObject> Chunks = new List<GameObject>();
     private static List<Vector3> ChunksLocation = new List<Vector3>();
+    public bool chunkState;
 
+    
     /// <summary>
     /// Convert real space into chunk space
     /// </summary>
@@ -23,6 +25,22 @@ public class chunkManager : MonoBehaviour {
         return new Vector3((int)(realSpace.x / ChunkSize), 0, (int)(realSpace.z / ChunkSize));
     }
 
+
+    /// <summary>
+    /// Convert real space into chunk space, and report it in realspace
+    /// </summary>
+    /// <param name="realSpace"></param>
+    /// <returns></returns>
+    public static Vector3 GetChunkRealSpace(Vector3 realSpace)
+    {
+        return GetChunkSpace(realSpace)*ChunkSize;
+    }
+
+    /// <summary>
+    /// Create chunk at real space location
+    /// </summary>
+    /// <param name="location"></param>
+    /// <returns></returns>
     public static GameObject CreateChunk(Vector3 location)
     {
         if (!ChunksLocation.Contains(location))
@@ -30,6 +48,7 @@ public class chunkManager : MonoBehaviour {
             GameObject chunk =  Instantiate(data.chunkPrefab, location,Quaternion.identity);
             Chunks.Add(chunk);
             ChunksLocation.Add(location);
+            
             return chunk;
         } else {
             return null;
@@ -38,6 +57,11 @@ public class chunkManager : MonoBehaviour {
         
     }
 
+    /// <summary>
+    /// Get GameObject of realspace Chunk
+    /// </summary>
+    /// <param name="location"></param>
+    /// <returns></returns>
     public static GameObject IsChunk(Vector3 location)
     {
         if (chunkManager.ChunksLocation.Contains(location))
@@ -60,11 +84,26 @@ public class chunkManager : MonoBehaviour {
         return height;
     }
 
+    public bool changeState(bool state)
+    {
+        foreach (Transform c in GetComponentsInChildren<Transform>())
+            if (!c.name.Contains("Chunk"))
+            {
+                //c.enabled = state;
+                c.GetComponent<Renderer>().enabled = state;
+                c.GetComponent<Collider>().enabled = state;
+                chunkState = state;
+
+            }
+        return true;
+    }
+
     void Start()
     {
         // Well, we have created a new chunk. Time to generate it.
 
         StartCoroutine(Generate(transform));
+        //StartCoroutine(keepActive());
         // Welp, all done
     }
 
@@ -111,11 +150,7 @@ public class chunkManager : MonoBehaviour {
                 }
             }
         }
-        //First time generation
-        /*if (parent.transform.position == Vector3.zero)
-        {
-            
-        }*/
+        
     }
 
 

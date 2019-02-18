@@ -69,13 +69,19 @@ public class Block : MonoBehaviour
     {
 
         int layer = data.hardblocklayermask;
-        // Raycast in all directions among blocks
-        bool covered = Physics.Raycast(ray[0], 1f, layer) && Physics.Raycast(ray[1], 1f, layer) && Physics.Raycast(ray[2], 1f, layer) && Physics.Raycast(ray[3], 1f, layer) && Physics.Raycast(ray[4], 1f, layer) && Physics.Raycast(ray[5], 1f, layer);
-        //Debug.Log(stat);
-        //bool earlyenable = GetComponent<Renderer>().enabled;
-        GetComponent<Renderer>().enabled = !covered || overr;
-        // Doing this messes up re-enabling by colliders. DONT
-        //GetComponent<Collider>().enabled = !covered || overr;
+        
+        bool covered;
+        if (GetComponentInParent<chunkManager>().chunkState)
+        {
+            // Do Raycast only if required, to save time
+            covered = Physics.Raycast(ray[0], 1f, layer) && Physics.Raycast(ray[1], 1f, layer) && Physics.Raycast(ray[2], 1f, layer) && Physics.Raycast(ray[3], 1f, layer) && Physics.Raycast(ray[4], 1f, layer) && Physics.Raycast(ray[5], 1f, layer);
+            GetComponent<Renderer>().enabled = (!covered || overr);
+        }
+        else
+        {
+            GetComponent<Renderer>().enabled = covered = false;
+        }
+        
 
         // Kickstart the hiding protocol
         if (overr) { StartCoroutine(FallAsleep()); }
