@@ -74,7 +74,10 @@ public class Block : MonoBehaviour
         if (GetComponentInParent<chunkManager>().chunkState)
         {
             // Do Raycast only if required, to save time
+            //Debug.Log(ray[0]);
+            //covered = false;
             covered = Physics.Raycast(ray[0], 1f, layer) && Physics.Raycast(ray[1], 1f, layer) && Physics.Raycast(ray[2], 1f, layer) && Physics.Raycast(ray[3], 1f, layer) && Physics.Raycast(ray[4], 1f, layer) && Physics.Raycast(ray[5], 1f, layer);
+            //Debug.Log(covered);
             GetComponent<Renderer>().enabled = (!covered || overr);
         }
         else
@@ -120,7 +123,7 @@ public class Block : MonoBehaviour
         //yield return new WaitForEndOfFrame();
         while (true)
         {
-            yield return new WaitForSeconds(data.timeslots);
+            yield return new WaitForSeconds(data.timeslots*5);
             if (changeStateIfCave())
             {
                 break;

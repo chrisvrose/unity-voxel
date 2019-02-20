@@ -9,10 +9,13 @@ public class chunkManager : MonoBehaviour {
     public static short ChunkSize = 16;
     public static readonly short seedf = 3567;
     public static readonly Vector2 GenesisDisplacement = new Vector2(seedf % 100, seedf / 100);
+
     public static readonly int generateRadius = 2;
+
+    public bool chunkState = false;
+
     private static List<GameObject> Chunks = new List<GameObject>();
     private static List<Vector3> ChunksLocation = new List<Vector3>();
-    public bool chunkState;
 
     
     /// <summary>
@@ -90,7 +93,8 @@ public class chunkManager : MonoBehaviour {
             if (!c.name.Contains("Chunk"))
             {
                 //c.enabled = state;
-                c.GetComponent<Renderer>().enabled = state;
+                if (!state) c.GetComponent<Renderer>().enabled = false;
+                //else c.GetComponent<Block>().changeStateIfCave();
                 c.GetComponent<Collider>().enabled = state;
                 chunkState = state;
 
