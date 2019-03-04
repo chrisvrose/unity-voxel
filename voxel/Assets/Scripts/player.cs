@@ -124,6 +124,7 @@ public class player : MonoBehaviour
         hasPressed[5] = hasPressed[5] || Input.GetKey("4");
         hasPressed[6] = hasPressed[6] || Input.GetKey("5");
         //Debug.Log(inventory);
+        
     }
 
 
@@ -177,4 +178,6 @@ public class player : MonoBehaviour
             yield return new WaitForSeconds(0.25f);
         }
     }
+
+    
 }

@@ -1,0 +1,58 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public abstract class GenericBlock : MonoBehaviour {
+    public blocktypes type;
+
+    public static GameObject Blockinit(blocktypes block, Vector3 pos, Transform parent)
+    {
+        GameObject sblock = Instantiate(data.block, pos, Quaternion.identity, parent);
+        sblock.GetComponent<GenericBlock>().setBlockType(block);
+        Material mat = sblock.GetComponent<Renderer>().material;
+        if (mat.GetColor("_EmissionColor") != (new Color(0, 0, 0)))
+        {
+            sblock.GetComponent<Light>().enabled = true;
+            sblock.GetComponent<Light>().color = mat.GetColor("_EmissionColor");
+        }
+
+
+
+        return sblock;
+    }
+
+    /// <summary>
+    /// Upon generation, call function to set the block type.
+    /// </summary>
+    /// <param name="block"></param>
+    private void setBlockType(blocktypes block)
+    {
+        type = block;
+        Material mat = Resources.Load("Materials/" + (int)block) as Material;
+        GetComponent<Renderer>().material = mat;
+        if (mat.HasProperty("_Metallic"))
+        {
+            //Debug.Log(mat.GetFloat("_Metallic"));
+            GetComponent<ReflectionProbe>().enabled = true;
+        }
+        if (mat.GetColor("_EmissionColor") != (new Color(0, 0, 0)))
+        {
+            GetComponent<Light>().color = mat.GetColor("_EmissionColor");
+            GetComponent<Light>().enabled = true;
+        }
+        // If transparent move to another layer
+        if (mat.color.a != 1f) gameObject.layer = 10;
+        //print(block);
+        //renderer.
+
+    }
+
+
+    // Use this for initialization
+    protected abstract void Start();
+	
+	// Update is called once per frame
+	public void Update () {
+		
+	}
+}

@@ -3,24 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class Block : MonoBehaviour
+public class Block : GenericBlock
 {
-    public blocktypes type;
     public Ray[] ray;
-
-    public static GameObject Blockinit(blocktypes block, Vector3 pos, Transform parent)
-    {
-        GameObject sblock = Instantiate(data.block, pos, Quaternion.identity, parent);
-        sblock.GetComponent<Block>().setBlockType(block);
-        return sblock;
-    }
 
 
     public static void BlockDestroy(GameObject block_to_del)
     {
 
         // Create a tinyblock of the same type of the block to be destroyed
-        tiny_blocks.Blockinit(block_to_del.GetComponent<Block>().type, block_to_del.GetComponent<Transform>().position);
+        tiny_blocks.Blockinit(block_to_del.GetComponent<Block>().type, block_to_del.GetComponent<Transform>().position, chunkManager.IsChunk(chunkManager.GetChunkSpace(block_to_del.GetComponent<Transform>().position)).transform);
 
         Block willdie = block_to_del.GetComponent<Block>();
         Ray[] r = { willdie.ray[0], willdie.ray[1], willdie.ray[2], willdie.ray[3], willdie.ray[4], willdie.ray[5] };
@@ -36,32 +28,6 @@ public class Block : MonoBehaviour
             }
         }
         Destroy(block_to_del);
-    }
-
-    /// <summary>
-    /// Upon generation, call function to set the block type.
-    /// </summary>
-    /// <param name="block"></param>
-    private void setBlockType(blocktypes block)
-    {
-        type = block;
-        Material mat = Resources.Load("Materials/" + (int)block) as Material;
-        GetComponent<Renderer>().material = mat;
-        if (mat.HasProperty("_Metallic"))
-        {
-            //Debug.Log(mat.GetFloat("_Metallic"));
-            GetComponent<ReflectionProbe>().enabled = true;
-        }
-        if (mat.GetColor("_EmissionColor") != (new Color(0, 0, 0)))
-        {
-            GetComponent<Light>().color = mat.GetColor("_EmissionColor");
-            GetComponent<Light>().enabled = true;
-        }
-        // If transparent move to another layer
-        if (mat.color.a != 1f) gameObject.layer = 10;
-        //print(block);
-        //renderer.
-
     }
 
 
@@ -98,7 +64,7 @@ public class Block : MonoBehaviour
         return (blocktypes)int.Parse(GetComponent<Renderer>().material.name);
     }
 
-    void Start()
+    override protected void Start()
     {
         // As block cannot change position we make it part of the data
         ray = new Ray[6] {

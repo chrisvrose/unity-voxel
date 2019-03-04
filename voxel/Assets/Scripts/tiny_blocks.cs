@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class tiny_blocks : MonoBehaviour
+public class tiny_blocks : GenericBlock
 {
     private void OnCollisionEnter(Collision collision)
     {
@@ -10,18 +10,18 @@ public class tiny_blocks : MonoBehaviour
         {
             data.player.GetComponent<player>().modifyInventory(getBlockType(), 1);
 
-            Destroy(GetComponent<GameObject>());
+            Destroy(transform);
             //print( getBlockType() );
         }
     }
     // Use this for initialization
-    void Start()
+    override protected void Start() 
     {
         StartCoroutine(killme());
     }
 
     // Update is called once per frame
-    void Update()
+    new void Update()
     {
 
     }
@@ -32,31 +32,6 @@ public class tiny_blocks : MonoBehaviour
         Destroy(gameObject);
     }
 
-
-    public static GameObject Blockinit(blocktypes block, Vector3 pos)
-    {
-        //nblock = Resources.Load("Prefab/Block") as GameObject;
-
-        GameObject sblock = Instantiate(data.block_particle, pos + Random.insideUnitSphere / 2f, Quaternion.Euler(Quaternion.identity.eulerAngles + Random.insideUnitSphere * 60f));
-        sblock.GetComponent<tiny_blocks>().setBlockType(block);
-
-        Material mat = sblock.GetComponent<Renderer>().material;
-        if (mat.GetColor("_EmissionColor") != (new Color(0, 0, 0)))
-        {
-            sblock.GetComponent<Light>().enabled = true;
-            sblock.GetComponent<Light>().color = mat.GetColor("_EmissionColor");
-        }
-        //Debug.Log(mat.color);
-
-        return sblock;
-    }
-    private void setBlockType(blocktypes block)
-    {
-        Material mat = Resources.Load("Materials/" + (int)block) as Material;
-        GetComponent<Renderer>().material = mat;
-
-
-    }
     public blocktypes getBlockType()
     {
         Debug.Log(GetComponent<Renderer>().material.name);
