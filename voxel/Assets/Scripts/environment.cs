@@ -43,7 +43,7 @@ public class environment : MonoBehaviour
         #endregion
 
         //Start work
-        data.player = Instantiate(data.player_prefab, new Vector3(0, 35, 0), Quaternion.identity) as GameObject;
+        data.player = Instantiate(data.player_prefab, new Vector3(0, 35*(1+data.timeslots), 0), Quaternion.identity) as GameObject;
         StartCoroutine(Generation());
         StartCoroutine(CycleTime());
         StartCoroutine(ChangeChunkState());
