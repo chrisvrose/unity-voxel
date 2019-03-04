@@ -46,13 +46,5 @@ public abstract class GenericBlock : MonoBehaviour {
         //renderer.
 
     }
-
-
-    // Use this for initialization
-    protected abstract void Start();
-	
-	// Update is called once per frame
-	public void Update () {
-		
-	}
+    
 }

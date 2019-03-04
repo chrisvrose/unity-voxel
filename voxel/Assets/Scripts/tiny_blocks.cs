@@ -6,6 +6,7 @@ public class tiny_blocks : GenericBlock
 {
     private void OnCollisionEnter(Collision collision)
     {
+        Debug.LogWarning("Coll Warn");
         if (collision.transform == data.player.transform)
         {
             data.player.GetComponent<player>().modifyInventory(getBlockType(), 1);
@@ -15,13 +16,13 @@ public class tiny_blocks : GenericBlock
         }
     }
     // Use this for initialization
-    override protected void Start() 
+    protected void Start() 
     {
         StartCoroutine(killme());
     }
 
     // Update is called once per frame
-    new void Update()
+    void Update()
     {
 
     }

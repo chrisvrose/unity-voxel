@@ -10,7 +10,6 @@ public class Block : GenericBlock
 
     public static void BlockDestroy(GameObject block_to_del)
     {
-
         // Create a tinyblock of the same type of the block to be destroyed
         tiny_blocks.Blockinit(block_to_del.GetComponent<Block>().type, block_to_del.GetComponent<Transform>().position, chunkManager.IsChunk(chunkManager.GetChunkSpace(block_to_del.GetComponent<Transform>().position)).transform);
 
@@ -27,6 +26,11 @@ public class Block : GenericBlock
                 hit.transform.GetComponent<Block>().changeStateIfCave(true);
             }
         }
+
+
+        Debug.Log("ASKED TO REMOVE");
+        //DestroyImmediate(block_to_del, true);
+        Debug.Log(block_to_del.transform.position);
         Destroy(block_to_del);
     }
 
@@ -64,7 +68,7 @@ public class Block : GenericBlock
         return (blocktypes)int.Parse(GetComponent<Renderer>().material.name);
     }
 
-    override protected void Start()
+    void Start()
     {
         // As block cannot change position we make it part of the data
         ray = new Ray[6] {
