@@ -6,8 +6,14 @@ public abstract class GenericBlock : MonoBehaviour {
     public blocktypes type;
     public static GameObject selfObject = null;
     
-
-
+    /// <summary>
+    /// Take care of block generation
+    /// </summary>
+    /// <param name="prefab">What Prefab to use</param>
+    /// <param name="block">What form of block to use</param>
+    /// <param name="pos">Position</param>
+    /// <param name="parent">Parent chunk</param>
+    /// <returns></returns>
     public static GameObject Blockinit(GameObject prefab,blocktypes block, Vector3 pos, Transform parent)
     {
         //if (prefab == null) prefab = data.block;
@@ -19,9 +25,7 @@ public abstract class GenericBlock : MonoBehaviour {
             sblock.GetComponent<Light>().enabled = true;
             sblock.GetComponent<Light>().color = mat.GetColor("_EmissionColor");
         }
-
-
-
+        
         return sblock;
     }
 

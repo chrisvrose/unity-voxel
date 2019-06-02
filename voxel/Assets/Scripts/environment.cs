@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class environment : MonoBehaviour
+public class Environment : MonoBehaviour
 {
     GameObject player;
-    //GameObject defblock;
 
     [Range(1, 8)]
     public int generate_radius;
@@ -83,15 +82,15 @@ public class environment : MonoBehaviour
         while (true)
         {
             //Get current chunk player is in
-            playerchunka = chunkManager.GetChunkSpace(data.player.transform.position);
+            playerchunka = ChunkManager.GetChunkSpace(data.player.transform.position);
             
             for(int x = -generate_radius; x <= generate_radius; x++)
             {
                 for(int y = -generate_radius; y <= generate_radius; y++)
                 {
-                    generateat = (playerchunka + new Vector3(x,0, y))*chunkManager.ChunkSize;
+                    generateat = (playerchunka + new Vector3(x,0, y))*ChunkManager.ChunkSize;
 
-                    chunkManager.CreateChunk(generateat);//StartCoroutine(generate(generateat));
+                    ChunkManager.CreateChunk(generateat);
                     yield return new WaitForSeconds(.05f);
                 }
             }
@@ -107,15 +106,15 @@ public class environment : MonoBehaviour
     /// <returns></returns>
     IEnumerator ChangeChunkState()
     {
-
+        //yield return new WaitForEndOfFrame();
         while (true)
         {
-            //Debug.Log(chunkManager.GetChunkSpace(data.player.transform.position));
+            //Debug.Log(ChunkManager.GetChunkSpace(data.player.transform.position));
             for (int x = -generate_radius; x <= generate_radius; x++)
             {
                 for (int y = -generate_radius; y <= generate_radius; y++)
                 {
-                    GameObject i = chunkManager.IsChunk(chunkManager.GetChunkRealSpace(data.player.transform.position) + new Vector3(x, 0, y) * chunkManager.ChunkSize);
+                    GameObject i = ChunkManager.IsChunk(ChunkManager.GetChunkRealSpace(data.player.transform.position) + new Vector3(x, 0, y) * ChunkManager.ChunkSize);
                     if (i)
                     {
                         
@@ -125,7 +124,7 @@ public class environment : MonoBehaviour
 
             }
 
-            //Actively gimp
+            // Actively gimp
             foreach(GameObject x in ActiveChunks)
             {
                 if (OldChunks.Contains(x))
@@ -136,10 +135,10 @@ public class environment : MonoBehaviour
             //Debug.Log(OldChunks.Count);
 
             foreach (GameObject c in ActiveChunks)
-                c.GetComponent<chunkManager>().changeState(true);
+                c.GetComponent<ChunkManager>().changeState(true);
 
             foreach (GameObject c in OldChunks)
-                c.GetComponent<chunkManager>().changeState(false);
+                c.GetComponent<ChunkManager>().changeState(false);
 
             OldChunks.Clear();
             //Debug.Log(OldChunks.Count);

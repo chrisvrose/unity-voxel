@@ -26,7 +26,9 @@ public class player : MonoBehaviour
     private Vector3 try_to_move;
     private float camera_rotation = 0f;
 
-    // Use this for initialization
+    /// <summary>
+    /// Universal usable variables, setup
+    /// </summary>
     void Start()
     {
         #region Crosshair
@@ -167,8 +169,8 @@ public class player : MonoBehaviour
                     Vector3 place_pos = hit_object.position + hit.normal;
                     if (!hasPressed[0])
                     {
-                        Debug.Log("Asked to spawn");
-                        Block.Blockinit(data.block,(blocktypes)selected, place_pos, chunkManager.IsChunk(chunkManager.GetChunkSpace(place_pos)).transform);
+                        //Debug.Log("Asked to spawn");
+                        Block.Blockinit(data.block,(blocktypes)selected, place_pos, ChunkManager.IsChunk(ChunkManager.GetChunkSpace(place_pos)).transform);
                     }
                     else
                     {

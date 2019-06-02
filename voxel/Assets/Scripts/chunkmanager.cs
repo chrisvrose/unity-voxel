@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class chunkManager : MonoBehaviour {
+public class ChunkManager : MonoBehaviour {
     static readonly int[] GenesisIntesity = { 2,16 };
     static readonly float[] GenesisScale = { 8f, 16f };
     public static short ChunkSize = 16;
@@ -67,9 +67,9 @@ public class chunkManager : MonoBehaviour {
     /// <returns></returns>
     public static GameObject IsChunk(Vector3 location)
     {
-        if (chunkManager.ChunksLocation.Contains(location))
+        if (ChunkManager.ChunksLocation.Contains(location))
         {
-            return chunkManager.Chunks.Find(o => location == o.GetComponent<Transform>().position);
+            return ChunkManager.Chunks.Find(o => location == o.GetComponent<Transform>().position);
         }
         else
         {
@@ -121,18 +121,15 @@ public class chunkManager : MonoBehaviour {
     /// </summary>
     /// <param name="parent"></param>
     /// <returns></returns>
-    IEnumerator Generate(Transform parent)
-    {
-        // Instantiate
-        //ChunksLocation.Add(location);
+    IEnumerator Generate(Transform parent){
         short numberOfInstances = 0;
 
-        for (int x = 0; x < chunkManager.ChunkSize; x++)
+        for (int x = 0; x < ChunkManager.ChunkSize; x++)
         {
-            for (int z = 0; z < chunkManager.ChunkSize; z++)
+            for (int z = 0; z < ChunkManager.ChunkSize; z++)
             {
                 
-                short height = chunkManager.CalculateHeight(GenesisDisplacement.x + parent.position.x + x, GenesisDisplacement.y + parent.position.z + z);
+                short height = ChunkManager.CalculateHeight(GenesisDisplacement.x + parent.position.x + x, GenesisDisplacement.y + parent.position.z + z);
                 
                 GenericBlock.Blockinit(data.block,blocktypes.Grass, new Vector3(parent.position.x + x, height--, parent.position.z + z),parent);      //Build Grass and remove 1 from height
                 

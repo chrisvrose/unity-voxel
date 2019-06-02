@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class tiny_blocks : GenericBlock
+public class TinyBlocks : GenericBlock
 {
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.LogWarning("Coll Warn");
+        Debug.LogWarning("Coll Warn"+ collision.collider.name);
         if (collision.transform == data.player.transform)
         {
             data.player.GetComponent<player>().modifyInventory(getBlockType(), 1);
@@ -18,7 +18,7 @@ public class tiny_blocks : GenericBlock
     // Use this for initialization
     protected void Start() 
     {
-        StartCoroutine(killme());
+        StartCoroutine(killMe());
     }
 
     // Update is called once per frame
@@ -27,9 +27,11 @@ public class tiny_blocks : GenericBlock
 
     }
 
-    IEnumerator killme()
+    IEnumerator killMe()
     {
-        yield return new WaitForSeconds(Random.value * 200f);
+        float randomValue = Random.value;
+        //Debug.Log(randomValue);
+        yield return new WaitForSeconds(randomValue * 200f);
         Destroy(gameObject);
     }
 
@@ -38,8 +40,12 @@ public class tiny_blocks : GenericBlock
         Debug.Log(GetComponent<Renderer>().material.name);
         int a;
         if (int.TryParse(GetComponent<Renderer>().material.name, out a))
+        {
             return (blocktypes)a;
-        else return (blocktypes)1;
+        }
+        else {
+            return (blocktypes)1;
+        }
         //return (blocktypes)int.Parse(GetComponent<Renderer>().material.name);
     }
 }

@@ -11,7 +11,7 @@ public class Block : GenericBlock
     public static void BlockDestroy(GameObject block_to_del)
     {
         // Create a tinyblock of the same type of the block to be destroyed
-        tiny_blocks.Blockinit(data.block_particle,block_to_del.GetComponent<Block>().type, block_to_del.GetComponent<Transform>().position, chunkManager.IsChunk(chunkManager.GetChunkSpace(block_to_del.GetComponent<Transform>().position)).transform);
+        TinyBlocks.Blockinit(data.block_particle,block_to_del.GetComponent<Block>().type, block_to_del.GetComponent<Transform>().position, ChunkManager.IsChunk(ChunkManager.GetChunkSpace(block_to_del.GetComponent<Transform>().position)).transform);
 
         Block willdie = block_to_del.GetComponent<Block>();
         Ray[] r = { willdie.ray[0], willdie.ray[1], willdie.ray[2], willdie.ray[3], willdie.ray[4], willdie.ray[5] };
@@ -27,7 +27,7 @@ public class Block : GenericBlock
             }
         }
 
-        Debug.Log(block_to_del.transform.position);
+        //Debug.Log(block_to_del.transform.position);
         Destroy(block_to_del);
     }
 
@@ -38,7 +38,7 @@ public class Block : GenericBlock
         int layer = data.hardblocklayermask;
         
         bool covered;
-        if (GetComponentInParent<chunkManager>().chunkState)
+        if (GetComponentInParent<ChunkManager>().chunkState)
         {
             // Do Raycast only if required, to save time
             //Debug.Log(ray[0]);
@@ -87,7 +87,7 @@ public class Block : GenericBlock
     /// <returns></returns>
     IEnumerator FallAsleep()
     {
-        //yield return new WaitForEndOfFrame();
+        //yield return new WaitForSeconds(.2f);
         while (true)
         {
             yield return new WaitForSeconds(data.timeslots*5);
