@@ -130,6 +130,12 @@ public class player : MonoBehaviour
     }
 
 
+    void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("HIT:"+collision.collider.name);
+    }
+
+
     /// <summary>
     /// Add and remove contents of the inventory
     /// </summary>
@@ -181,7 +187,9 @@ public class player : MonoBehaviour
                 
             }
             // Reset the request
-            for(int i=0;i<hasPressed.Length;i++) hasPressed[i] = false;
+            for (int i = 0; i < hasPressed.Length; i++) {
+                hasPressed[i] = false;
+            }
 
             yield return new WaitForSeconds(0.25f);
         }

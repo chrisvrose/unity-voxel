@@ -75,6 +75,7 @@ GameObject:
   - component: {fileID: 54375117877854260}
   - component: {fileID: 114507905707807558}
   - component: {fileID: 143789737817167786}
+  - component: {fileID: 136244188085233784}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -311,9 +312,21 @@ MonoBehaviour:
   camera_sensitivity: 2
   movement_sensitivity: 5.06
   jump_sensitivity: 6.69
-  gravity: 9.82
   inventory: 
   selected: 0
+--- !u!136 &136244188085233784
+CapsuleCollider:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1759225136099956}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!136 &136621022952304168
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -322,7 +335,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 1372092895772524}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.5
   m_Height: 2
   m_Direction: 1
