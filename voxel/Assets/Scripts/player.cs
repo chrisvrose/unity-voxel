@@ -168,7 +168,7 @@ public class player : MonoBehaviour
                     if (!hasPressed[0])
                     {
                         Debug.Log("Asked to spawn");
-                        Block.Blockinit((blocktypes)selected, place_pos, chunkManager.IsChunk(chunkManager.GetChunkSpace(place_pos)).transform);
+                        Block.Blockinit(data.block,(blocktypes)selected, place_pos, chunkManager.IsChunk(chunkManager.GetChunkSpace(place_pos)).transform);
                     }
                     else
                     {

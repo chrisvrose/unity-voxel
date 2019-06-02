@@ -11,7 +11,7 @@ public class Block : GenericBlock
     public static void BlockDestroy(GameObject block_to_del)
     {
         // Create a tinyblock of the same type of the block to be destroyed
-        tiny_blocks.Blockinit(block_to_del.GetComponent<Block>().type, block_to_del.GetComponent<Transform>().position, chunkManager.IsChunk(chunkManager.GetChunkSpace(block_to_del.GetComponent<Transform>().position)).transform);
+        tiny_blocks.Blockinit(data.block_particle,block_to_del.GetComponent<Block>().type, block_to_del.GetComponent<Transform>().position, chunkManager.IsChunk(chunkManager.GetChunkSpace(block_to_del.GetComponent<Transform>().position)).transform);
 
         Block willdie = block_to_del.GetComponent<Block>();
         Ray[] r = { willdie.ray[0], willdie.ray[1], willdie.ray[2], willdie.ray[3], willdie.ray[4], willdie.ray[5] };
@@ -27,9 +27,6 @@ public class Block : GenericBlock
             }
         }
 
-
-        Debug.Log("ASKED TO REMOVE");
-        //DestroyImmediate(block_to_del, true);
         Debug.Log(block_to_del.transform.position);
         Destroy(block_to_del);
     }

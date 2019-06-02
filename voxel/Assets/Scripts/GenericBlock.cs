@@ -4,10 +4,14 @@ using UnityEngine;
 
 public abstract class GenericBlock : MonoBehaviour {
     public blocktypes type;
+    public static GameObject selfObject = null;
+    
 
-    public static GameObject Blockinit(blocktypes block, Vector3 pos, Transform parent)
+
+    public static GameObject Blockinit(GameObject prefab,blocktypes block, Vector3 pos, Transform parent)
     {
-        GameObject sblock = Instantiate(data.block, pos, Quaternion.identity, parent);
+        //if (prefab == null) prefab = data.block;
+        GameObject sblock = Instantiate(prefab, pos, Quaternion.identity, parent);
         sblock.GetComponent<GenericBlock>().setBlockType(block);
         Material mat = sblock.GetComponent<Renderer>().material;
         if (mat.GetColor("_EmissionColor") != (new Color(0, 0, 0)))
