@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public enum blocktypes { Grass = 1, Dirt, Stone, Glass }
+public enum blocktypes { Invalid,Grass, Dirt, Stone, Glass }
 public static class data
 {
     //Resources
