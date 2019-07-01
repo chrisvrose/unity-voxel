@@ -105,19 +105,11 @@ public class ChunkManager : MonoBehaviour {
     void Start()
     {
         // Well, we have created a new chunk. Time to generate it.
-
         StartCoroutine(Generate(transform));
-        //StartCoroutine(keepActive());
-        // Welp, all done
-    }
-
-    void Update()
-    {
-        
     }
 
     /// <summary>
-    /// Generate all the blocks inside the chunk
+    /// Generate all the blocks inside the chunk. Called after creation of chunk.
     /// </summary>
     /// <param name="parent"></param>
     /// <returns></returns>

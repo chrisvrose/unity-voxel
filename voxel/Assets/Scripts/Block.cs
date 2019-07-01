@@ -80,6 +80,8 @@ public class Block : GenericBlock
         //gameObject.SetActive(false);
     }
 
+
+    // Inactive
     /// <summary>
     /// Check if surrounded, and sleep
     /// </summary>

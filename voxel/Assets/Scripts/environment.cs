@@ -46,7 +46,7 @@ public class Environment : MonoBehaviour
         StartCoroutine(Generation());
         StartCoroutine(CycleTime());
         // Managing Chunk states (Disabled)
-        StartCoroutine(ChangeChunkState());
+        //StartCoroutine(ChangeChunkState());
     }
 
     // Update is called once per frame
