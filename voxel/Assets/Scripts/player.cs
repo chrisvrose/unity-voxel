@@ -129,10 +129,16 @@ public class player : MonoBehaviour
         
     }
 
-
-    void OnCollisionEnter(Collision collision)
+    private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        Debug.Log("HIT:"+collision.collider.name);
+        //Debug.Log("HITC:" + hit.transform.name);
+        if(hit.gameObject.GetComponent<TinyBlocks>() is TinyBlocks)
+        {
+            blocktypes blockTypeHere = hit.gameObject.GetComponent<TinyBlocks>().getBlockType();
+            Destroy(hit.gameObject);
+            //inventory
+
+        }
     }
 
 
