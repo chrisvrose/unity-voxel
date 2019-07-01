@@ -20,6 +20,7 @@ public abstract class GenericBlock : MonoBehaviour {
         GameObject sblock = Instantiate(prefab, pos, Quaternion.identity, parent);
         sblock.GetComponent<GenericBlock>().setBlockType(block);
         Material mat = sblock.GetComponent<Renderer>().material;
+        sblock.name = block.ToString()+ " Block";
         if (mat.GetColor("_EmissionColor") != (new Color(0, 0, 0)))
         {
             sblock.GetComponent<Light>().enabled = true;
