@@ -63,7 +63,6 @@ public class Environment : MonoBehaviour
     {
         while (true)
         {
-            
             transform.Rotate(new Vector3(.1f, 0, 0));
             //Debug.Log(transform.eulerAngles.x);
             bool night = transform.eulerAngles.x > 180;
@@ -148,4 +147,5 @@ public class Environment : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
     }
+
 }

@@ -22,7 +22,7 @@ public class Block : GenericBlock
             RaycastHit hit;
             if (Physics.Raycast(r[i], out hit, 1f, layer))
             {
-                hit.transform.GetComponent<Block>().ChangeStateIfCave(true);
+                //hit.transform.GetComponent<Block>().ChangeStateIfCave(true);
             }
         }
 

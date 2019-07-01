@@ -110,6 +110,7 @@ public class ChunkManager : MonoBehaviour {
 
     /// <summary>
     /// Generate all the blocks inside the chunk. Called after creation of chunk.
+    /// At the end, to update Chunk Mesh
     /// </summary>
     /// <param name="parent"></param>
     /// <returns></returns>
