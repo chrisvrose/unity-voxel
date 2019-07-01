@@ -7,7 +7,6 @@ public class Block : GenericBlock
 {
     public Ray[] ray;
 
-
     public static void BlockDestroy(GameObject block_to_del)
     {
         // Create a tinyblock of the same type of the block to be destroyed
@@ -23,7 +22,7 @@ public class Block : GenericBlock
             RaycastHit hit;
             if (Physics.Raycast(r[i], out hit, 1f, layer))
             {
-                hit.transform.GetComponent<Block>().changeStateIfCave(true);
+                hit.transform.GetComponent<Block>().ChangeStateIfCave(true);
             }
         }
 
@@ -31,8 +30,7 @@ public class Block : GenericBlock
         Destroy(block_to_del);
     }
 
-
-    public bool changeStateIfCave(bool overr = false)
+    public bool ChangeStateIfCave(bool overr = false)
     {
 
         int layer = data.hardblocklayermask;
@@ -60,7 +58,7 @@ public class Block : GenericBlock
         //Debug.Log(stat);
     }
 
-    public blocktypes getBlockType()
+    public blocktypes GetBlockType()
     {
         return (blocktypes)int.Parse(GetComponent<Renderer>().material.name);
     }
@@ -92,7 +90,7 @@ public class Block : GenericBlock
         while (true)
         {
             yield return new WaitForSeconds(data.timeslots*5);
-            if (changeStateIfCave())
+            if (ChangeStateIfCave())
             {
                 break;
             }

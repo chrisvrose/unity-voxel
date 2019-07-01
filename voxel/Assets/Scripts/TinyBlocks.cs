@@ -9,10 +9,10 @@ public class TinyBlocks : GenericBlock
         Debug.LogWarning("Coll Warn"+ collision.collider.name);
         if (collision.transform == data.player.transform)
         {
-            data.player.GetComponent<player>().modifyInventory(getBlockType(), 1);
+            //data.player.GetComponent<player>().ModifyInventory(getBlockType(), 1);
 
             Destroy(transform);
-            //print( getBlockType() );
+            //print( GetBlockType() );
         }
     }
     // Use this for initialization

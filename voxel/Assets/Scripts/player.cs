@@ -16,8 +16,7 @@ public class player : MonoBehaviour
     public float movement_sensitivity;
     public float jump_sensitivity;
     public const float gravity = 9.81f;
-
-    public short[] inventory;
+    
     public short selected;
     bool[] hasPressed;
 
@@ -46,15 +45,15 @@ public class player : MonoBehaviour
         crosshairTexture.Apply();
         #endregion
         #region Inventory initialization
-        inventory = new short[5];
+        //inventory = new short[5];
         selected = 1;
-        for (int i = 0; i > 5; i++) inventory[i] = 5;
+        //for (int i = 0; i > 5; i++) inventory[i] = 5;
         #endregion
         try_to_move = new Vector3(0, 0, 0);
         character = GetComponent<CharacterController>();
         hasPressed = new bool[7];
-        StartCoroutine(placeStuff());
-        StartCoroutine(UpdateFace());
+        StartCoroutine(PlaceStuff());
+        
     }
 
     /// <summary>
@@ -63,22 +62,6 @@ public class player : MonoBehaviour
     void OnGUI()
     {
         GUI.DrawTexture(position, crosshairTexture);
-    }
-
-
-    /// <summary>
-    /// Change the face every now and then.
-    /// </summary>
-    IEnumerator UpdateFace()
-    {
-        Transform a = transform.GetChild(0);
-        Transform b = transform.GetChild(1).GetChild(0);
-        //Debug.Log(b);
-        while (true)
-        {
-            b.localRotation = a.localRotation;
-            yield return new WaitForSeconds(.25f);
-        }
     }
 
     /// <summary>
@@ -141,25 +124,11 @@ public class player : MonoBehaviour
         }
     }
 
-
-    /// <summary>
-    /// Add and remove contents of the inventory
-    /// </summary>
-    /// <param name="blocktype">Block enum val</param>
-    /// <param name="num_mod">How much of a change</param>
-    /// <returns>bool of whether it was possible</returns>
-    public bool modifyInventory(blocktypes blocktype, short num_mod)
-    {
-        inventory[(int)blocktype - 1] += num_mod;
-        // Add methods to update block list GUI
-        return true;
-    }
-
     /// <summary>
     /// Every now and again this enumerator will trigger and do the placements and stuff. 
     /// </summary>
     /// <returns></returns>
-    IEnumerator placeStuff()
+    IEnumerator PlaceStuff()
     {
         for(; ; )
         {
@@ -187,15 +156,15 @@ public class player : MonoBehaviour
                     else
                     {
                         Block.BlockDestroy(hit.transform.gameObject);
-
                     }
                 }
                 
             }
             // Reset the request
-            for (int i = 0; i < hasPressed.Length; i++) {
+            hasPressed = new bool[hasPressed.Length];
+            /*for (int i = 0; i < hasPressed.Length; i++) {
                 hasPressed[i] = false;
-            }
+            }*/
 
             yield return new WaitForSeconds(0.25f);
         }

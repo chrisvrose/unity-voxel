@@ -94,7 +94,7 @@ public class ChunkManager : MonoBehaviour {
             {
                 //c.enabled = state;
                 if (!state) c.GetComponent<Renderer>().enabled = false;
-                //else c.GetComponent<Block>().changeStateIfCave();
+                //else c.GetComponent<Block>().ChangeStateIfCave();
                 c.GetComponent<Collider>().enabled = state;
                 chunkState = state;
 

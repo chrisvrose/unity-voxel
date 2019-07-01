@@ -18,6 +18,8 @@ public abstract class GenericBlock : MonoBehaviour {
     {
         //if (prefab == null) prefab = data.block;
         GameObject sblock = Instantiate(prefab, pos, Quaternion.identity, parent);
+
+        //Do some additional setup
         sblock.GetComponent<GenericBlock>().setBlockType(block);
         Material mat = sblock.GetComponent<Renderer>().material;
         sblock.name = block.ToString()+ " Block";
