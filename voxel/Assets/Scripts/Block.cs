@@ -37,26 +37,26 @@ public class Block : GenericBlock
 
         int layer = data.hardblocklayermask;
         
-        bool covered;
+        bool IsHidden;
         if (GetComponentInParent<ChunkManager>().chunkState)
         {
             // Do Raycast only if required, to save time
             //Debug.Log(ray[0]);
-            //covered = false;
-            covered = Physics.Raycast(ray[0], 1f, layer) && Physics.Raycast(ray[1], 1f, layer) && Physics.Raycast(ray[2], 1f, layer) && Physics.Raycast(ray[3], 1f, layer) && Physics.Raycast(ray[4], 1f, layer) && Physics.Raycast(ray[5], 1f, layer);
-            //Debug.Log(covered);
-            GetComponent<Renderer>().enabled = (!covered || overr);
+            //IsHidden = false;
+            IsHidden = Physics.Raycast(ray[0], 1f, layer) && Physics.Raycast(ray[1], 1f, layer) && Physics.Raycast(ray[2], 1f, layer) && Physics.Raycast(ray[3], 1f, layer) && Physics.Raycast(ray[4], 1f, layer) && Physics.Raycast(ray[5], 1f, layer);
+            //Debug.Log(IsHidden);
+            GetComponent<Renderer>().enabled = (!IsHidden || overr);
         }
         else
         {
-            GetComponent<Renderer>().enabled = covered = false;
+            GetComponent<Renderer>().enabled = IsHidden = false;
         }
         
 
         // Kickstart the hiding protocol
         if (overr) { StartCoroutine(FallAsleep()); }
 
-        return covered;
+        return IsHidden;
         //Debug.Log(stat);
     }
 
@@ -67,7 +67,7 @@ public class Block : GenericBlock
 
     void Start()
     {
-        // As block cannot change position we make it part of the data
+        // As blocks cannot change position we make it part of the data
         ray = new Ray[6] {
             new Ray(transform.position, transform.up),
             new Ray(transform.position, -transform.up),
@@ -77,7 +77,8 @@ public class Block : GenericBlock
             new Ray(transform.position, -transform.right)
         };
 
-        StartCoroutine(FallAsleep());
+        // Commented - Do not fall asleep again
+        //StartCoroutine(FallAsleep());
         //gameObject.SetActive(false);
     }
 

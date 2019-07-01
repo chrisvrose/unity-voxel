@@ -45,6 +45,7 @@ public class Environment : MonoBehaviour
         data.player = Instantiate(data.player_prefab, new Vector3(0, 35*(1+data.timeslots), 0), Quaternion.identity) as GameObject;
         StartCoroutine(Generation());
         StartCoroutine(CycleTime());
+        // Managing Chunk states (Disabled)
         StartCoroutine(ChangeChunkState());
     }
 

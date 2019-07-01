@@ -12,7 +12,7 @@ public class ChunkManager : MonoBehaviour {
 
     public static readonly int generateRadius = 2;
 
-    public bool chunkState = false;
+    public bool chunkState = true;//false;
 
     private static List<GameObject> Chunks = new List<GameObject>();
     private static List<Vector3> ChunksLocation = new List<Vector3>();
