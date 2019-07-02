@@ -98,8 +98,6 @@ public class player : MonoBehaviour
         character.Move(try_to_move * Time.deltaTime);
 
 
-
-
         // This pass helps remove double interactions, when the fps is low
         hasPressed[0] = hasPressed[0] || Input.GetMouseButtonDown(0);
         hasPressed[1] = hasPressed[1] || Input.GetMouseButtonDown(1);
@@ -108,16 +106,17 @@ public class player : MonoBehaviour
         hasPressed[4] = hasPressed[4] || Input.GetKey("3");
         hasPressed[5] = hasPressed[5] || Input.GetKey("4");
         hasPressed[6] = hasPressed[6] || Input.GetKey("5");
-        //Debug.Log(inventory);
-        
+
     }
+
+
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         //Debug.Log("HITC:" + hit.transform.name);
         if(hit.gameObject.GetComponent<TinyBlocks>() is TinyBlocks)
         {
-            blocktypes blockTypeHere = hit.gameObject.GetComponent<TinyBlocks>().getBlockType();
+            blocktypes blockTypeHere = hit.gameObject.GetComponent<TinyBlocks>().GetBlockType();
             Destroy(hit.gameObject);
             //inventory
 
@@ -152,10 +151,12 @@ public class player : MonoBehaviour
                     {
                         //Debug.Log("Asked to spawn");
                         Block.Blockinit(data.block,(blocktypes)selected, place_pos, ChunkManager.IsChunk(ChunkManager.GetChunkSpace(place_pos)).transform);
+                        //Update mesh?
+                        ChunkManager.IsChunk(ChunkManager.GetChunkSpace(place_pos)).GetComponent<ChunkManager>().UpdateMesh();
                     }
                     else
                     {
-                        Block.BlockDestroy(hit.transform.gameObject);
+                        hit.transform.GetComponent<Block>().BlockDestroy();
                     }
                 }
                 

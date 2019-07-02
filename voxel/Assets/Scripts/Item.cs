@@ -12,16 +12,31 @@ public class Item {
     /// <summary>
     /// Set at Item creation, readonly
     /// </summary>
-    readonly private blocktypes blockType;
+    protected blocktypes blockType;
+    public blocktypes Type {
+        get
+        {
+            return blockType;
+        }
+        set
+        {
+            //Some small validation
+            if (value == blocktypes.Invalid)
+            {
+                count = 0;
+            }
+            blockType = value;
+        }
+    }
 
-    private short count;
+    protected short count;
 
     /// <summary>
-    /// Validate new Item Creation
+    /// Item piece creation
     /// </summary>
     /// <param name="b"></param>
     /// <param name="c"></param>
-    Item(blocktypes b,short c)
+    public Item(blocktypes b,short c)
     {
         blockType = c>0?b:blocktypes.Invalid;
         count = c > 0 ? c : (short)1;
@@ -36,6 +51,8 @@ public class Item {
     {
         return someType == blockType;
     }
+
+    
     public short GetCount()
     {
         return count;

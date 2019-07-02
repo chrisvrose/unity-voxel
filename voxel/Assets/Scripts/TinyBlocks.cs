@@ -34,18 +34,4 @@ public class TinyBlocks : GenericBlock
         yield return new WaitForSeconds(randomValue * 200f);
         Destroy(gameObject);
     }
-
-    public blocktypes getBlockType()
-    {
-        Debug.Log(GetComponent<Renderer>().material.name);
-        int a;
-        if (int.TryParse(GetComponent<Renderer>().material.name, out a))
-        {
-            return (blocktypes)a;
-        }
-        else {
-            return (blocktypes)1;
-        }
-        //return (blocktypes)int.Parse(GetComponent<Renderer>().material.name);
-    }
 }

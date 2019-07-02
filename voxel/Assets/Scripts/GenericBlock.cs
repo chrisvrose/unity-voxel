@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class GenericBlock : MonoBehaviour {
-    public blocktypes type;
+    protected Item BaseItem;
     public static GameObject selfObject = null;
     
     /// <summary>
@@ -18,7 +18,8 @@ public abstract class GenericBlock : MonoBehaviour {
     {
         //if (prefab == null) prefab = data.block;
         GameObject sblock = Instantiate(prefab, pos, Quaternion.identity, parent);
-
+        
+        sblock.GetComponent<GenericBlock>().BaseItem = new Item(block, 1);
         //Do some additional setup
         sblock.GetComponent<GenericBlock>().setBlockType(block);
         Material mat = sblock.GetComponent<Renderer>().material;
@@ -32,13 +33,23 @@ public abstract class GenericBlock : MonoBehaviour {
         return sblock;
     }
 
+
+    /// <summary>
+    /// Get type of block used
+    /// </summary>
+    /// <returns>Type of block</returns>
+    public blocktypes GetBlockType()
+    {
+        return BaseItem.Type;
+    }
+
     /// <summary>
     /// Upon generation, call function to set the block type.
     /// </summary>
     /// <param name="block"></param>
     private void setBlockType(blocktypes block)
     {
-        type = block;
+        BaseItem.Type = block;
         Material mat = Resources.Load("Materials/" + (int)block) as Material;
         GetComponent<Renderer>().material = mat;
         if (mat.HasProperty("_Metallic"))

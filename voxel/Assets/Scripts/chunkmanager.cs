@@ -12,7 +12,7 @@ public class ChunkManager : MonoBehaviour {
 
     public static readonly int generateRadius = 2;
 
-    public bool chunkState = true;//false;
+    public bool chunkState = true;
 
     private static List<GameObject> Chunks = new List<GameObject>();
     private static List<Vector3> ChunksLocation = new List<Vector3>();
@@ -144,8 +144,28 @@ public class ChunkManager : MonoBehaviour {
                 }
             }
         }
-        
+
+        // Generation complete, commence a mesh update
+        parent.GetComponent<ChunkManager>().UpdateMesh();
+
     }
 
+
+    public void UpdateMesh()
+    {
+        MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
+        //Debug.Log(GetComponentsInChildren<MeshFilter>().ToString());
+        CombineInstance[] combineInstance = new CombineInstance[meshFilters.Length];
+        for(int i = 0; i < meshFilters.Length; i++)
+        {
+            //Consider blocks only
+            if (meshFilters[i].gameObject.GetComponent<Block>()==null) continue;
+            combineInstance[i].subMeshIndex = 0;
+            combineInstance[i].mesh = meshFilters[i].sharedMesh;
+            combineInstance[i].transform = meshFilters[i].transform.localToWorldMatrix * Matrix4x4.Rotate( transform.rotation).inverse * Matrix4x4.Translate(transform.position).inverse;
+        }
+        (transform.GetComponent<MeshFilter>().sharedMesh = new Mesh()).CombineMeshes(combineInstance);
+
+    }
 
 }

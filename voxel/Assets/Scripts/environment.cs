@@ -7,7 +7,7 @@ public class Environment : MonoBehaviour
     GameObject player;
 
     [Range(1, 8)]
-    public int generate_radius;
+    public int GenerationRadius;
 
 
     [Range(-1, 9999)]
@@ -84,9 +84,9 @@ public class Environment : MonoBehaviour
             //Get current chunk player is in
             playerchunka = ChunkManager.GetChunkSpace(data.player.transform.position);
             
-            for(int x = -generate_radius; x <= generate_radius; x++)
+            for(int x = -GenerationRadius; x <= GenerationRadius; x++)
             {
-                for(int y = -generate_radius; y <= generate_radius; y++)
+                for(int y = -GenerationRadius; y <= GenerationRadius; y++)
                 {
                     generateat = (playerchunka + new Vector3(x,0, y))*ChunkManager.ChunkSize;
 
@@ -110,14 +110,13 @@ public class Environment : MonoBehaviour
         while (true)
         {
             //Debug.Log(ChunkManager.GetChunkSpace(data.player.transform.position));
-            for (int x = -generate_radius; x <= generate_radius; x++)
+            for (int x = -GenerationRadius; x <= GenerationRadius; x++)
             {
-                for (int y = -generate_radius; y <= generate_radius; y++)
+                for (int y = -GenerationRadius; y <= GenerationRadius; y++)
                 {
                     GameObject i = ChunkManager.IsChunk(ChunkManager.GetChunkRealSpace(data.player.transform.position) + new Vector3(x, 0, y) * ChunkManager.ChunkSize);
                     if (i)
                     {
-                        
                         ActiveChunks.Add(i);
                     }
                 }
