@@ -153,6 +153,10 @@ public class ChunkManager : MonoBehaviour {
 
     public void UpdateMesh()
     {
+        Mesh newMesh = new Mesh
+        {
+            subMeshCount = 6
+        };
         MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
         //Debug.Log(GetComponentsInChildren<MeshFilter>().ToString());
         CombineInstance[] combineInstance = new CombineInstance[meshFilters.Length];
@@ -160,11 +164,12 @@ public class ChunkManager : MonoBehaviour {
         {
             //Consider blocks only
             if (meshFilters[i].gameObject.GetComponent<Block>()==null) continue;
-            combineInstance[i].subMeshIndex = 0;
             combineInstance[i].mesh = meshFilters[i].sharedMesh;
+            combineInstance[i].subMeshIndex = (int)(meshFilters[i].gameObject.GetComponent<GenericBlock>().GetBlockType());
             combineInstance[i].transform = meshFilters[i].transform.localToWorldMatrix * Matrix4x4.Rotate( transform.rotation).inverse * Matrix4x4.Translate(transform.position).inverse;
         }
-        (transform.GetComponent<MeshFilter>().sharedMesh = new Mesh()).CombineMeshes(combineInstance);
+        newMesh.CombineMeshes(combineInstance,false);
+        transform.GetComponent<MeshFilter>().sharedMesh = newMesh;
 
     }
 

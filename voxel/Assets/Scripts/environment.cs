@@ -15,6 +15,7 @@ public class Environment : MonoBehaviour
 
     List<GameObject> OldChunks = new List<GameObject>();
     List<GameObject> ActiveChunks = new List<GameObject>();
+
     // Use this for initialization
     void Start()
     {

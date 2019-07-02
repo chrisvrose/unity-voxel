@@ -4,6 +4,13 @@ using UnityEngine;
 
 public abstract class GenericBlock : MonoBehaviour {
     protected Item BaseItem;
+    public Item item {
+        get
+        {
+            return BaseItem;
+        }
+    }
+
     public static GameObject selfObject = null;
     
     /// <summary>
@@ -19,7 +26,7 @@ public abstract class GenericBlock : MonoBehaviour {
         //if (prefab == null) prefab = data.block;
         GameObject sblock = Instantiate(prefab, pos, Quaternion.identity, parent);
         
-        sblock.GetComponent<GenericBlock>().BaseItem = new Item(block, 1);
+        sblock.GetComponent<GenericBlock>().BaseItem = new Item(block);
         //Do some additional setup
         sblock.GetComponent<GenericBlock>().setBlockType(block);
         Material mat = sblock.GetComponent<Renderer>().material;
@@ -42,6 +49,8 @@ public abstract class GenericBlock : MonoBehaviour {
     {
         return BaseItem.Type;
     }
+    
+
 
     /// <summary>
     /// Upon generation, call function to set the block type.
