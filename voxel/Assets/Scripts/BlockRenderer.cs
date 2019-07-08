@@ -29,7 +29,8 @@ public class BlockRenderer : MonoBehaviour
                 {
                     continue;
                 }
-                if (item.Type == m.GetComponent<Block>().GetBlockType() && m.GetComponent<Block>().GetCave() )
+                // getcave true if not covered
+                if (item.Type == m.GetComponent<Block>().GetBlockType() && !m.GetComponent<Block>().GetCave() )
                 {
                     combines.Add(new CombineInstance { mesh = m.sharedMesh, transform = m.transform.localToWorldMatrix });
                 }

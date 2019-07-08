@@ -146,9 +146,9 @@ public class ChunkManager : MonoBehaviour {
         }
 
         // Generation complete, commence a mesh update
-        //parent.GetComponent<ChunkManager>().UpdateMeshNew();
-        GameObject.FindGameObjectWithTag("BlockRenderer").SendMessage("UpdateMesh", new Item(blocktypes.Grass));
-        GameObject.FindGameObjectWithTag("BlockRenderer").SendMessage("UpdateMesh", new Item(blocktypes.Dirt));
+        parent.GetComponent<ChunkManager>().UpdateMeshNew();
+        //GameObject.FindGameObjectWithTag("BlockRenderer").SendMessage("UpdateMesh", new Item(blocktypes.Grass));
+        //GameObject.FindGameObjectWithTag("BlockRenderer").SendMessage("UpdateMesh", new Item(blocktypes.Dirt));
     }
 
 
@@ -195,11 +195,10 @@ public class ChunkManager : MonoBehaviour {
                 continue;
             }
             int index = (int)(i.gameObject.GetComponent<Block>().GetBlockType());
-            combineInstances[index].Add(new CombineInstance());
-            CombineInstance lastElement = combineInstances[index][combineInstances[index].Count - 1];
-            lastElement.mesh = i.sharedMesh;
+            combineInstances[index].Add(new CombineInstance { mesh = i.sharedMesh, transform = i.transform.localToWorldMatrix * Matrix4x4.Rotate(transform.rotation).inverse * Matrix4x4.Translate(transform.position).inverse });
+            //lastElement.mesh = i.sharedMesh;
             // Transform to World Coordinates, but relative to the Chunk object by undoing self transformation and rotation
-            lastElement.transform = i.transform.localToWorldMatrix * Matrix4x4.Rotate(transform.rotation).inverse * Matrix4x4.Translate(transform.position).inverse;
+            //lastElement.transform = i.transform.localToWorldMatrix * Matrix4x4.Rotate(transform.rotation).inverse * Matrix4x4.Translate(transform.position).inverse;
         }
 
         for(int i = 0; i < 6; i++)

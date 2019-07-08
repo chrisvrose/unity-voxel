@@ -5,11 +5,16 @@ using UnityEngine;
 
 public class Block : GenericBlock
 {
-    protected Ray[] Rays;
-
-    public void Start()
+    /// <summary>
+    /// Check if block is surrounded by solid. True if covered
+    /// </summary>
+    /// <returns></returns>
+    public bool GetCave()
     {
-        Rays = new Ray[6] {
+        
+        //bool endstate = true;
+        //Debug.Log(Rays.Length);
+        Ray[] ray = new Ray[6] {
             new Ray(transform.position, transform.up),
             new Ray(transform.position, -transform.up),
             new Ray(transform.position, transform.forward),
@@ -17,25 +22,11 @@ public class Block : GenericBlock
             new Ray(transform.position, transform.right),
             new Ray(transform.position, -transform.right)
         };
-    }
+        bool isHidden = Physics.Raycast(ray[0], 1f, data.hardblocklayermask) && Physics.Raycast(ray[1], 1f, data.hardblocklayermask) && Physics.Raycast(ray[2], 1f, data.hardblocklayermask) && Physics.Raycast(ray[3], 1f, data.hardblocklayermask) && Physics.Raycast(ray[4], 1f, data.hardblocklayermask) && Physics.Raycast(ray[5], 1f, data.hardblocklayermask);
 
-    /// <summary>
-    /// Check if block is surrounded by solid
-    /// </summary>
-    /// <returns></returns>
-    public bool GetCave()
-    {
-        bool endstate = true;
-        Debug.Log(Rays.Length);
-        foreach(Ray r in Rays)
-        {
-            RaycastHit hit;
-            if(Physics.Raycast(r,out hit, 1f, data.blocklayermask))
-            {
-                endstate &= false;
-            }
-        }
-        return endstate;
+        //print(this.Rays[0].direction);
+        return isHidden;//return (Physics.Raycast(Rays[0], 1f, data.blocklayermask));
+        //return true;
     }
 
     public void BlockDestroy()
