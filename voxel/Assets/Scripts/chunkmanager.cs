@@ -146,17 +146,15 @@ public class ChunkManager : MonoBehaviour {
         }
 
         // Generation complete, commence a mesh update
-        parent.GetComponent<ChunkManager>().UpdateMesh();
-
+        //parent.GetComponent<ChunkManager>().UpdateMeshNew();
+        GameObject.FindGameObjectWithTag("BlockRenderer").SendMessage("UpdateMesh", new Item(blocktypes.Grass));
+        GameObject.FindGameObjectWithTag("BlockRenderer").SendMessage("UpdateMesh", new Item(blocktypes.Dirt));
     }
 
 
     public void UpdateMesh()
     {
-        Mesh newMesh = new Mesh
-        {
-            subMeshCount = 6
-        };
+        Mesh newMesh = new Mesh();
         MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
         //Debug.Log(GetComponentsInChildren<MeshFilter>().ToString());
         CombineInstance[] combineInstance = new CombineInstance[meshFilters.Length];
@@ -165,12 +163,54 @@ public class ChunkManager : MonoBehaviour {
             //Consider blocks only
             if (meshFilters[i].gameObject.GetComponent<Block>()==null) continue;
             combineInstance[i].mesh = meshFilters[i].sharedMesh;
-            combineInstance[i].subMeshIndex = (int)(meshFilters[i].gameObject.GetComponent<GenericBlock>().GetBlockType());
+            //combineInstance[i].subMeshIndex = 0;
             combineInstance[i].transform = meshFilters[i].transform.localToWorldMatrix * Matrix4x4.Rotate( transform.rotation).inverse * Matrix4x4.Translate(transform.position).inverse;
         }
-        newMesh.CombineMeshes(combineInstance,false);
+        newMesh.CombineMeshes(combineInstance);
         transform.GetComponent<MeshFilter>().sharedMesh = newMesh;
+    }
 
+    public void UpdateMeshNew()
+    {
+        List<Mesh> meshes = new List<Mesh>(6);
+
+        // Unholy
+        List<List<CombineInstance>> combineInstances = new List<List<CombineInstance>>(6);
+        List<CombineInstance> finalCombine = new List<CombineInstance>();
+        MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
+
+        //Init lists - Per material
+        for(int i = 0; i < 6; i++)
+        {
+            combineInstances.Add(new List<CombineInstance>());
+        }
+
+
+        //Bunchup all mesh filters into respective combineInstances
+        foreach(MeshFilter i in meshFilters)
+        {
+            // Skip non-blocks
+            if(i.gameObject.GetComponent<Block>() == null)
+            {
+                continue;
+            }
+            int index = (int)(i.gameObject.GetComponent<Block>().GetBlockType());
+            combineInstances[index].Add(new CombineInstance());
+            CombineInstance lastElement = combineInstances[index][combineInstances[index].Count - 1];
+            lastElement.mesh = i.sharedMesh;
+            // Transform to World Coordinates, but relative to the Chunk object by undoing self transformation and rotation
+            lastElement.transform = i.transform.localToWorldMatrix * Matrix4x4.Rotate(transform.rotation).inverse * Matrix4x4.Translate(transform.position).inverse;
+        }
+
+        for(int i = 0; i < 6; i++)
+        {
+            meshes.Add(new Mesh());
+            meshes[meshes.Count - 1].CombineMeshes(combineInstances[meshes.Count - 1].ToArray());
+            finalCombine.Add(new CombineInstance { mesh = meshes[meshes.Count - 1] });
+        }
+        Mesh finalMesh = new Mesh();
+        finalMesh.CombineMeshes(finalCombine.ToArray(), false, false);
+        transform.GetComponent<MeshFilter>().sharedMesh = finalMesh;
     }
 
 }

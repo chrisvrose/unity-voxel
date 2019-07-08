@@ -152,7 +152,7 @@ public class player : MonoBehaviour
                         //Debug.Log("Asked to spawn");
                         Block.Blockinit(data.block,(blocktypes)selected, place_pos, ChunkManager.IsChunk(ChunkManager.GetChunkSpace(place_pos)).transform);
                         //Update mesh?
-                        ChunkManager.IsChunk(ChunkManager.GetChunkSpace(place_pos)).GetComponent<ChunkManager>().UpdateMesh();
+                        //ChunkManager.IsChunk(ChunkManager.GetChunkSpace(place_pos)).GetComponent<ChunkManager>().UpdateMesh();
                     }
                     else
                     {

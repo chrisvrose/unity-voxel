@@ -141,7 +141,6 @@ public class Environment : MonoBehaviour
                 c.GetComponent<ChunkManager>().changeState(false);
 
             OldChunks.Clear();
-            //Debug.Log(OldChunks.Count);
             OldChunks.AddRange(ActiveChunks);
             ActiveChunks.Clear();
             yield return new WaitForEndOfFrame();
