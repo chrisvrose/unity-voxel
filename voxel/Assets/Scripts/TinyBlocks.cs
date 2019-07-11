@@ -21,12 +21,6 @@ public class TinyBlocks : GenericBlock
         StartCoroutine(killMe());
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     IEnumerator killMe()
     {
         float randomValue = Random.value;
