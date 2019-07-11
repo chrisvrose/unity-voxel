@@ -39,7 +39,7 @@ public class Block : GenericBlock
         // Destroy filter to disable rendering
         Destroy(gameObject.GetComponent<MeshFilter>());
         // Update mesh
-        //gameObject.GetComponentInParent<ChunkManager>().UpdateMesh();
+        gameObject.GetComponentInParent<ChunkManager>().UpdateMesh();
 
         Destroy(this.gameObject);
     }

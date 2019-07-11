@@ -124,12 +124,12 @@ public class ChunkManager : MonoBehaviour {
                 
                 short height = ChunkManager.CalculateHeight(GenesisDisplacement.x + parent.position.x + x, GenesisDisplacement.y + parent.position.z + z);
                 
-                GenericBlock.Blockinit(data.block,blocktypes.Grass, new Vector3(parent.position.x + x, height--, parent.position.z + z),parent);      //Build Grass and remove 1 from height
+                GenericBlock.Blockinit(data.block,blocktypes.Grass, new Vector3(parent.position.x + x, height--, parent.position.z + z),parent,false);      //Build Grass and remove 1 from height
                 
                 for (int y = 0; y <= height; y++)
                 {
                     // Chuck in a block
-                    GenericBlock.Blockinit(data.block,blocktypes.Dirt, new Vector3(parent.position.x + x, y, parent.position.z + z),parent);
+                    GenericBlock.Blockinit(data.block,blocktypes.Dirt, new Vector3(parent.position.x + x, y, parent.position.z + z),parent,false);
                     // Increment numberOfInstances
                 }
                 numberOfInstances++;
@@ -146,31 +146,12 @@ public class ChunkManager : MonoBehaviour {
         }
 
         // Generation complete, commence a mesh update
-        parent.GetComponent<ChunkManager>().UpdateMeshNew();
+        parent.GetComponent<ChunkManager>().UpdateMesh();
         //GameObject.FindGameObjectWithTag("BlockRenderer").SendMessage("UpdateMesh", new Item(blocktypes.Grass));
         //GameObject.FindGameObjectWithTag("BlockRenderer").SendMessage("UpdateMesh", new Item(blocktypes.Dirt));
     }
 
-
     public void UpdateMesh()
-    {
-        Mesh newMesh = new Mesh();
-        MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
-        //Debug.Log(GetComponentsInChildren<MeshFilter>().ToString());
-        CombineInstance[] combineInstance = new CombineInstance[meshFilters.Length];
-        for(int i = 0; i < meshFilters.Length; i++)
-        {
-            //Consider blocks only
-            if (meshFilters[i].gameObject.GetComponent<Block>()==null) continue;
-            combineInstance[i].mesh = meshFilters[i].sharedMesh;
-            //combineInstance[i].subMeshIndex = 0;
-            combineInstance[i].transform = meshFilters[i].transform.localToWorldMatrix * Matrix4x4.Rotate( transform.rotation).inverse * Matrix4x4.Translate(transform.position).inverse;
-        }
-        newMesh.CombineMeshes(combineInstance);
-        transform.GetComponent<MeshFilter>().sharedMesh = newMesh;
-    }
-
-    public void UpdateMeshNew()
     {
         List<Mesh> meshes = new List<Mesh>(6);
 
@@ -189,8 +170,11 @@ public class ChunkManager : MonoBehaviour {
         //Bunchup all mesh filters into respective combineInstances
         foreach(MeshFilter i in meshFilters)
         {
-            // Skip non-blocks
-            if(i.gameObject.GetComponent<Block>() == null)
+            // Skip non-blocks and if no meshfilter
+            if(i.gameObject.GetComponent<Block>() == null || i.gameObject.GetComponent<MeshFilter>()==null)
+            {
+                continue;
+            } else if (i.gameObject.GetComponent<Block>().GetCave())
             {
                 continue;
             }
@@ -201,15 +185,25 @@ public class ChunkManager : MonoBehaviour {
             //lastElement.transform = i.transform.localToWorldMatrix * Matrix4x4.Rotate(transform.rotation).inverse * Matrix4x4.Translate(transform.position).inverse;
         }
 
+        List<Material> materials = new List<Material>();
         for(int i = 0; i < 6; i++)
         {
+            // Preparing materials for the mesh renderer
+            if (combineInstances[i].Count > 0)
+            {
+                materials.Add(Resources.Load("Materials/" + i) as Material);
+            }
             meshes.Add(new Mesh());
             meshes[meshes.Count - 1].CombineMeshes(combineInstances[meshes.Count - 1].ToArray());
             finalCombine.Add(new CombineInstance { mesh = meshes[meshes.Count - 1] });
         }
+
+        
+
         Mesh finalMesh = new Mesh();
         finalMesh.CombineMeshes(finalCombine.ToArray(), false, false);
         transform.GetComponent<MeshFilter>().sharedMesh = finalMesh;
+        transform.GetComponent<MeshRenderer>().materials = materials.ToArray();
     }
 
 }
