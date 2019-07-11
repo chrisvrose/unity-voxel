@@ -64,11 +64,10 @@ public abstract class GenericBlock : MonoBehaviour {
     private void setBlockType(blocktypes block)
     {
         BaseItem.Type = block;
-        Material mat = Resources.Load("Materials/" + (int)block) as Material;
+        Material mat = data.materials[(int)block];
         GetComponent<Renderer>().material = mat;
         if (mat.HasProperty("_Metallic"))
         {
-            //Debug.Log(mat.GetFloat("_Metallic"));
             GetComponent<ReflectionProbe>().enabled = true;
         }
         if (mat.GetColor("_EmissionColor") != (new Color(0, 0, 0)))
@@ -78,8 +77,6 @@ public abstract class GenericBlock : MonoBehaviour {
         }
         // If transparent move to another layer
         if (mat.color.a != 1f) gameObject.layer = 10;
-        //print(block);
-        //renderer.
 
     }
     

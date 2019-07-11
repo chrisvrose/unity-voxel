@@ -13,6 +13,7 @@ public static class data
     public static GameObject player_prefab;     //Assigned in Environment.cs
     //Runtime stuff
     public static GameObject player;        //Assigned in Environment.cs, access camera through myCamera
+    public static List<Material> materials = new List<Material>();
     //Generated stuff
     public static int seed;
     public static short gendegen_rate;

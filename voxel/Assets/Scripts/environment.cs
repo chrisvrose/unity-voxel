@@ -38,6 +38,12 @@ public class Environment : MonoBehaviour
         data.block = Resources.Load("Prefab/Block") as GameObject;
         data.block_particle = Resources.Load("Prefab/particle_block") as GameObject;
 
+        for(int i = 0; i < 6; i++)
+        {
+            data.materials.Add(Resources.Load("Materials/" + i) as Material);
+        }
+
+
         data.gendegen_rate = (short)(1f / (4 * Time.deltaTime));
         data.timeslots = (short)(data.gendegen_rate / 4);
         #endregion
@@ -46,8 +52,8 @@ public class Environment : MonoBehaviour
         data.player = Instantiate(data.player_prefab, new Vector3(0, 35*(1+data.timeslots), 0), Quaternion.identity) as GameObject;
         StartCoroutine(Generation());
         StartCoroutine(CycleTime());
-        // Managing Chunk states (Disabled)
-        //StartCoroutine(ChangeChunkState());
+        // Managing Chunk states
+        StartCoroutine(ChangeChunkState());
     }
 
     // Update is called once per frame

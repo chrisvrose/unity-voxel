@@ -146,9 +146,7 @@ public class ChunkManager : MonoBehaviour {
         }
 
         // Generation complete, commence a mesh update
-        parent.GetComponent<ChunkManager>().UpdateMesh();
-        //GameObject.FindGameObjectWithTag("BlockRenderer").SendMessage("UpdateMesh", new Item(blocktypes.Grass));
-        //GameObject.FindGameObjectWithTag("BlockRenderer").SendMessage("UpdateMesh", new Item(blocktypes.Dirt));
+        parent.SendMessage("UpdateMesh");
     }
 
     public void UpdateMesh()
@@ -191,7 +189,7 @@ public class ChunkManager : MonoBehaviour {
             // Preparing materials for the mesh renderer
             if (combineInstances[i].Count > 0)
             {
-                materials.Add(Resources.Load("Materials/" + i) as Material);
+                materials.Add(data.materials[i]);
             }
             meshes.Add(new Mesh());
             meshes[meshes.Count - 1].CombineMeshes(combineInstances[meshes.Count - 1].ToArray());
