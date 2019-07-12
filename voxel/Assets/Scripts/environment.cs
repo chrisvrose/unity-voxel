@@ -37,6 +37,7 @@ public class Environment : MonoBehaviour
         data.player_prefab = Resources.Load("Prefab/Player") as GameObject;
         data.block = Resources.Load("Prefab/Block") as GameObject;
         data.block_particle = Resources.Load("Prefab/particle_block") as GameObject;
+        
 
         for(int i = 0; i < 6; i++)
         {
@@ -53,14 +54,9 @@ public class Environment : MonoBehaviour
         StartCoroutine(Generation());
         StartCoroutine(CycleTime());
         // Managing Chunk states
-        StartCoroutine(ChangeChunkState());
+        //StartCoroutine(ChangeChunkState());
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+    
 
     /// <summary>
     /// Cycle through day and night cycles. Change light intensities and ambience to make it look better

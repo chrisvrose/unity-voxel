@@ -151,21 +151,17 @@ public class player : MonoBehaviour
                     {
                         //Debug.Log("Asked to spawn");
                         Block.Blockinit(data.block,(blocktypes)selected, place_pos, ChunkManager.IsChunk(ChunkManager.GetChunkSpace(place_pos)).transform);
-                        //Update mesh?
-                        //ChunkManager.IsChunk(ChunkManager.GetChunkSpace(place_pos)).GetComponent<ChunkManager>().UpdateMesh();
                     }
                     else
                     {
                         hit.transform.GetComponent<Block>().BlockDestroy();
+
                     }
                 }
                 
             }
             // Reset the request
             hasPressed = new bool[hasPressed.Length];
-            /*for (int i = 0; i < hasPressed.Length; i++) {
-                hasPressed[i] = false;
-            }*/
 
             yield return new WaitForSeconds(0.25f);
         }

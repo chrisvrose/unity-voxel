@@ -11,7 +11,6 @@ public class Block : GenericBlock
     /// <returns></returns>
     public bool GetCave()
     {
-        
         //bool endstate = true;
         //Debug.Log(Rays.Length);
         Ray[] ray = new Ray[6] {
@@ -32,15 +31,17 @@ public class Block : GenericBlock
     public void BlockDestroy()
     {
         // Create a tinyblock of the same type of the block to be destroyed
-        GenericBlock.Blockinit(data.block_particle,BaseItem.Type, transform.position, ChunkManager.IsChunk(ChunkManager.GetChunkSpace(transform.position)).transform);
+        Transform RequiredChunk = transform.GetComponentInParent<Transform>();
+        GenericBlock.Blockinit(data.block_particle,BaseItem.Type, transform.position, RequiredChunk);
 
         // Tell parent chunk to update mesh
 
         // Destroy filter to disable rendering
-        Destroy(gameObject.GetComponent<MeshFilter>());
+        gameObject.GetComponent<MeshFilter>().mesh.Clear();
         // Update mesh
-        gameObject.GetComponentInParent<ChunkManager>().UpdateMesh();
-
+        transform.GetComponentInParent<ChunkManager>().StartCoroutine("DelayedUpdateMesh");
         Destroy(this.gameObject);
+        //Sorcery
+        
     }
 }

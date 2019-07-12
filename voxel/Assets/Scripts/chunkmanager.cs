@@ -197,11 +197,17 @@ public class ChunkManager : MonoBehaviour {
         }
 
         
-
         Mesh finalMesh = new Mesh();
         finalMesh.CombineMeshes(finalCombine.ToArray(), false, false);
         transform.GetComponent<MeshFilter>().sharedMesh = finalMesh;
         transform.GetComponent<MeshRenderer>().materials = materials.ToArray();
+        Debug.Log("Updated");
+    }
+
+    IEnumerator DelayedUpdateMesh()
+    {
+        yield return new WaitForEndOfFrame();
+        UpdateMesh();
     }
 
 }
