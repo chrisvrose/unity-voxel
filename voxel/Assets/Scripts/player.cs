@@ -150,7 +150,10 @@ public class player : MonoBehaviour
                     if (!hasPressed[0])
                     {
                         //Debug.Log("Asked to spawn");
+                        // Note this convolution here is if not using a block already
                         Block.Blockinit(data.block,(blocktypes)selected, place_pos, ChunkManager.IsChunk(ChunkManager.GetChunkSpace(place_pos)).transform);
+                        // Workaround to lots of math, just get parent of hit
+                        //Block.Blockinit(data.block, (blocktypes)selected, place_pos, hit.transform.GetComponentInParent<Transform>());
                     }
                     else
                     {

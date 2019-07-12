@@ -30,8 +30,8 @@ public class Block : GenericBlock
 
     public void BlockDestroy()
     {
-        // Create a tinyblock of the same type of the block to be destroyed
-        Transform RequiredChunk = transform.GetComponentInParent<Transform>();
+        // Create a tinyblock of the same type of the block to be destroyed'
+        Transform RequiredChunk = ChunkManager.IsChunk(ChunkManager.GetChunkSpace(transform.position)).transform;
         GenericBlock.Blockinit(data.block_particle,BaseItem.Type, transform.position, RequiredChunk);
 
         // Tell parent chunk to update mesh

@@ -40,7 +40,8 @@ public abstract class GenericBlock : MonoBehaviour {
 
         if (UpdateMesh)
         {
-            parent.GetComponent<ChunkManager>().UpdateMesh();
+            Transform p = parent;
+            p.GetComponent<ChunkManager>().UpdateMesh();
         }
         return sblock;
     }
