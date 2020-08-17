@@ -34,7 +34,7 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
-voxel/Assets/Resources/Models/torch.blend
-voxel/Assets/Resources/Models/torch.blend.meta
-voxel/Assets/Resources/Models/torch.blend1
-voxel/Assets/Resources/Models/torch.blend1.meta
+#voxel/Assets/Resources/Models/torch.blend
+#voxel/Assets/Resources/Models/torch.blend.meta
+#voxel/Assets/Resources/Models/torch.blend1
+#voxel/Assets/Resources/Models/torch.blend1.meta

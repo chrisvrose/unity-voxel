@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Block : GenericBlock
 {
+    protected MeshFilter myMeshFilter;
     /// <summary>
     /// Check if block is surrounded by solid. True if covered
     /// </summary>
