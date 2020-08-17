@@ -120,7 +120,7 @@ public class ChunkManager : MonoBehaviour
             {
                 for(int y = -generationRadius; y <= generationRadius; y++)
                 {
-                    generateat = (playerchunka + new Vector3(x,0, y))*Chunk.ChunkSize;
+                    generateat = playerchunka + new Vector3(x,0, y)*Chunk.ChunkSize;
 
                     Data.chunkManager.createChunk(generateat);
                     yield return new WaitForSeconds(.05f);

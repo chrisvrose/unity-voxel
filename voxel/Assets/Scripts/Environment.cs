@@ -8,7 +8,7 @@ public class Environment : MonoBehaviour
 
     
 
-    [Range(1, 8)]
+    [Range(.03125f, 8)]
     public float timeMultiplier;
 
     [Range(-1, 9999)]
@@ -94,7 +94,7 @@ public class Environment : MonoBehaviour
                 for (int y = -GenerationRadius; y <= GenerationRadius; y++)
                 {
                     //get chunk around player chunks
-                    GameObject i = Data.chunkManager.getChunk(Data.player.transform.position + new Vector3(x,0,y) * ChunkManager.chunkSize);
+                    GameObject i = Data.chunkManager.getChunk(Data.player.transform.position + (new Vector3(x,0,y) * ChunkManager.chunkSize));
                     if (i)
                     {
                         ActiveChunks.Add(i);

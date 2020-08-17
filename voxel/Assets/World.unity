@@ -223,8 +223,8 @@ GameObject:
   m_Component:
   - component: {fileID: 734953163}
   - component: {fileID: 734953162}
-  - component: {fileID: 734953161}
   - component: {fileID: 734953164}
+  - component: {fileID: 734953161}
   m_Layer: 0
   m_Name: WorldLight
   m_TagString: Untagged
@@ -244,8 +244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cf86f205e7a4684cb5b45f0558b3974, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GenerationRadius: 1
-  timeMultiplier: 0
+  timeMultiplier: 0.03125
   seedf: 1001
 --- !u!108 &734953162
 Light:
@@ -334,3 +333,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81de751e1ab553a38b6f6cc8298ee866, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  generationRadius: 2
