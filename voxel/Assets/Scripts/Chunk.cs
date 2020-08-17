@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class ChunkManager : MonoBehaviour {
+public class Chunk : MonoBehaviour {
     static readonly int[] GenesisIntesity = { 2,16 };
     static readonly float[] GenesisScale = { 8f, 16f };
     public static short ChunkSize = 16;
@@ -67,9 +67,9 @@ public class ChunkManager : MonoBehaviour {
     /// <returns></returns>
     public static GameObject IsChunk(Vector3 location)
     {
-        if (ChunkManager.ChunksLocation.Contains(location))
+        if (Chunk.ChunksLocation.Contains(location))
         {
-            return ChunkManager.Chunks.Find(o => location == o.GetComponent<Transform>().position);
+            return Chunk.Chunks.Find(o => location == o.GetComponent<Transform>().position);
         }
         else
         {
@@ -117,12 +117,12 @@ public class ChunkManager : MonoBehaviour {
     IEnumerator Generate(Transform parent){
         short numberOfInstances = 0;
 
-        for (int x = 0; x < ChunkManager.ChunkSize; x++)
+        for (int x = 0; x < Chunk.ChunkSize; x++)
         {
-            for (int z = 0; z < ChunkManager.ChunkSize; z++)
+            for (int z = 0; z < Chunk.ChunkSize; z++)
             {
                 
-                short height = ChunkManager.CalculateHeight(GenesisDisplacement.x + parent.position.x + x, GenesisDisplacement.y + parent.position.z + z);
+                short height = Chunk.CalculateHeight(GenesisDisplacement.x + parent.position.x + x, GenesisDisplacement.y + parent.position.z + z);
                 
                 GenericBlock.Blockinit(data.block,blocktypes.Grass, new Vector3(parent.position.x + x, height--, parent.position.z + z),parent,false);      //Build Grass and remove 1 from height
                 

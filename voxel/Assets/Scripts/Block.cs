@@ -32,7 +32,7 @@ public class Block : GenericBlock
     public void BlockDestroy()
     {
         // Create a tinyblock of the same type of the block to be destroyed'
-        Transform RequiredChunk = ChunkManager.IsChunk(ChunkManager.GetChunkSpace(transform.position)).transform;
+        Transform RequiredChunk = Chunk.IsChunk(Chunk.GetChunkSpace(transform.position)).transform;
         GenericBlock.Blockinit(data.block_particle,BaseItem.Type, transform.position, RequiredChunk);
 
         // Tell parent chunk to update mesh
@@ -40,7 +40,7 @@ public class Block : GenericBlock
         // Destroy filter to disable rendering
         gameObject.GetComponent<MeshFilter>().mesh.Clear();
         // Update mesh
-        transform.GetComponentInParent<ChunkManager>().StartCoroutine("DelayedUpdateMesh");
+        transform.GetComponentInParent<Chunk>().StartCoroutine("DelayedUpdateMesh");
         Destroy(this.gameObject);
         //Sorcery
         

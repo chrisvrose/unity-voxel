@@ -12,9 +12,9 @@ public class Player : MonoBehaviour
 
 
     public const float interact_disance = 10f;
-    public float camera_sensitivity;
-    public float movement_sensitivity;
-    public float jump_sensitivity;
+    public float camera_sensitivity = 1f;
+    public float movement_sensitivity = 2f;
+    public float jump_sensitivity = 1f;
     public const float gravity = 9.81f;
     
     public short selected;
@@ -151,7 +151,7 @@ public class Player : MonoBehaviour
                     {
                         //Debug.Log("Asked to spawn");
                         // Note this convolution here is if not using a block already
-                        Block.Blockinit(data.block,(blocktypes)selected, place_pos, ChunkManager.IsChunk(ChunkManager.GetChunkSpace(place_pos)).transform);
+                        Block.Blockinit(data.block,(blocktypes)selected, place_pos, Chunk.IsChunk(Chunk.GetChunkSpace(place_pos)).transform);
                         // Workaround to lots of math, just get parent of hit
                         //Block.Blockinit(data.block, (blocktypes)selected, place_pos, hit.transform.GetComponentInParent<Transform>());
                     }

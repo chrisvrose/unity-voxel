@@ -85,15 +85,15 @@ public class Environment : MonoBehaviour
         while (true)
         {
             //Get current chunk player is in
-            playerchunka = ChunkManager.GetChunkSpace(data.player.transform.position);
+            playerchunka = Chunk.GetChunkSpace(data.player.transform.position);
             
             for(int x = -GenerationRadius; x <= GenerationRadius; x++)
             {
                 for(int y = -GenerationRadius; y <= GenerationRadius; y++)
                 {
-                    generateat = (playerchunka + new Vector3(x,0, y))*ChunkManager.ChunkSize;
+                    generateat = (playerchunka + new Vector3(x,0, y))*Chunk.ChunkSize;
 
-                    ChunkManager.CreateChunk(generateat);
+                    Chunk.CreateChunk(generateat);
                     yield return new WaitForSeconds(.05f);
                 }
             }
@@ -117,7 +117,7 @@ public class Environment : MonoBehaviour
             {
                 for (int y = -GenerationRadius; y <= GenerationRadius; y++)
                 {
-                    GameObject i = ChunkManager.IsChunk(ChunkManager.GetChunkRealSpace(data.player.transform.position) + new Vector3(x, 0, y) * ChunkManager.ChunkSize);
+                    GameObject i = Chunk.IsChunk(Chunk.GetChunkRealSpace(data.player.transform.position) + new Vector3(x, 0, y) * Chunk.ChunkSize);
                     if (i)
                     {
                         ActiveChunks.Add(i);
@@ -137,10 +137,10 @@ public class Environment : MonoBehaviour
             //Debug.Log(OldChunks.Count);
 
             foreach (GameObject c in ActiveChunks)
-                c.GetComponent<ChunkManager>().changeState(true);
+                c.GetComponent<Chunk>().changeState(true);
 
             foreach (GameObject c in OldChunks)
-                c.GetComponent<ChunkManager>().changeState(false);
+                c.GetComponent<Chunk>().changeState(false);
 
             OldChunks.Clear();
             OldChunks.AddRange(ActiveChunks);
