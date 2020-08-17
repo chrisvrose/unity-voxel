@@ -8,8 +8,8 @@ public class ChunkManager : MonoBehaviour
     static readonly int[] GenesisIntesity = { 2, 16 };
     static readonly float[] GenesisScale = { 8f, 16f };
     public readonly short seedf = 3567;
-    public readonly int generateRadius = 2;
-
+    [Range(1, 8)]
+    public int generationRadius;
     public static int chunkSize = 16;
     public Dictionary<Vector3Int, GameObject> Chunks;
     // Start is called before the first frame update
@@ -21,6 +21,8 @@ public class ChunkManager : MonoBehaviour
     void Start()
     {
         Chunks = new Dictionary<Vector3Int, GameObject>(new VectorIntEquality());
+        //Loaded, now start the generation
+        StartCoroutine(Generation());
     }
 
 
@@ -98,6 +100,36 @@ public class ChunkManager : MonoBehaviour
     {
         yield return new WaitForSeconds(10);
         Debug.Log("REEEEEE");
+    }
+
+
+
+    /// <summary>
+    /// Check if generation required, call required functions then
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator Generation()
+    {
+        Vector3 playerchunka,generateat;
+        while (true)
+        {
+            //Get current chunk player is in
+            playerchunka = ChunkManager.getChunkCoords(Data.player.transform.position);
+            
+            for(int x = -generationRadius; x <= generationRadius; x++)
+            {
+                for(int y = -generationRadius; y <= generationRadius; y++)
+                {
+                    generateat = (playerchunka + new Vector3(x,0, y))*Chunk.ChunkSize;
+
+                    Data.chunkManager.createChunk(generateat);
+                    yield return new WaitForSeconds(.05f);
+                }
+            }
+            
+            yield return new WaitForSeconds(.5f);
+            
+        }
     }
 
 

@@ -6,8 +6,7 @@ public class Environment : MonoBehaviour
 {
     GameObject player;
 
-    [Range(1, 8)]
-    public int GenerationRadius;
+    
 
     [Range(1, 8)]
     public float timeMultiplier;
@@ -53,7 +52,7 @@ public class Environment : MonoBehaviour
 
         //Start work
         Data.player = Instantiate(Data.player_prefab, new Vector3(0, 35*(1+Data.timeslots), 0), Quaternion.identity) as GameObject;
-        StartCoroutine(Generation());
+        // StartCoroutine(Generation());
         StartCoroutine(CycleTime());
         // Managing Chunk states
         //StartCoroutine(ChangeChunkState());
@@ -77,33 +76,7 @@ public class Environment : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Check if generation required, call required functions then
-    /// </summary>
-    /// <returns></returns>
-    IEnumerator Generation()
-    {
-        Vector3 playerchunka,generateat;
-        while (true)
-        {
-            //Get current chunk player is in
-            playerchunka = ChunkManager.getChunkCoords(Data.player.transform.position);
-            
-            for(int x = -GenerationRadius; x <= GenerationRadius; x++)
-            {
-                for(int y = -GenerationRadius; y <= GenerationRadius; y++)
-                {
-                    generateat = (playerchunka + new Vector3(x,0, y))*Chunk.ChunkSize;
-
-                    Data.chunkManager.createChunk(generateat);
-                    yield return new WaitForSeconds(.05f);
-                }
-            }
-            
-            yield return new WaitForSeconds(.5f);
-            
-        }
-    }
+    
 
     /// <summary>
     /// If player is too far off, disable chunks, and reenable them accordingly.
@@ -111,6 +84,7 @@ public class Environment : MonoBehaviour
     /// <returns></returns>
     IEnumerator ChangeChunkState()
     {
+        int GenerationRadius = Data.chunkManager.generationRadius;
         //yield return new WaitForEndOfFrame();
         while (true)
         {
