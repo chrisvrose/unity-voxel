@@ -65,7 +65,7 @@ public abstract class GenericBlock : MonoBehaviour {
     private void setBlockType(blocktypes block)
     {
         BaseItem.Type = block;
-        Material mat = data.materials[(int)block];
+        Material mat = Data.materials[(int)block];
         GetComponent<Renderer>().material = mat;
         if (mat.HasProperty("_Metallic"))
         {

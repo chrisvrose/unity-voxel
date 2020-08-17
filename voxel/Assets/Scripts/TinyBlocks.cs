@@ -7,7 +7,7 @@ public class TinyBlocks : GenericBlock
     private void OnCollisionEnter(Collision collision)
     {
         Debug.LogWarning("Coll Warn"+ collision.collider.name);
-        if (collision.transform == data.player.transform)
+        if (collision.transform == Data.player.transform)
         {
             //data.player.GetComponent<player>().ModifyInventory(getBlockType(), 1);
 
@@ -18,7 +18,7 @@ public class TinyBlocks : GenericBlock
     // Use this for initialization
     protected void Start() 
     {
-        StartCoroutine(killMe());
+        StartCoroutine("killMe");
     }
 
     IEnumerator killMe()

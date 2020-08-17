@@ -22,7 +22,7 @@ public class Block : GenericBlock
             new Ray(transform.position, transform.right),
             new Ray(transform.position, -transform.right)
         };
-        bool isHidden = Physics.Raycast(ray[0], 1f, data.hardblocklayermask) && Physics.Raycast(ray[1], 1f, data.hardblocklayermask) && Physics.Raycast(ray[2], 1f, data.hardblocklayermask) && Physics.Raycast(ray[3], 1f, data.hardblocklayermask) && Physics.Raycast(ray[4], 1f, data.hardblocklayermask) && Physics.Raycast(ray[5], 1f, data.hardblocklayermask);
+        bool isHidden = Physics.Raycast(ray[0], 1f, Data.hardblocklayermask) && Physics.Raycast(ray[1], 1f, Data.hardblocklayermask) && Physics.Raycast(ray[2], 1f, Data.hardblocklayermask) && Physics.Raycast(ray[3], 1f, Data.hardblocklayermask) && Physics.Raycast(ray[4], 1f, Data.hardblocklayermask) && Physics.Raycast(ray[5], 1f, Data.hardblocklayermask);
 
         //print(this.Rays[0].direction);
         return isHidden;//return (Physics.Raycast(Rays[0], 1f, data.blocklayermask));
@@ -32,8 +32,9 @@ public class Block : GenericBlock
     public void BlockDestroy()
     {
         // Create a tinyblock of the same type of the block to be destroyed'
-        Transform RequiredChunk = Chunk.IsChunk(Chunk.GetChunkSpace(transform.position)).transform;
-        GenericBlock.Blockinit(data.block_particle,BaseItem.Type, transform.position, RequiredChunk);
+        // TODO
+        Transform RequiredChunk = Data.chunkManager.getChunk(transform.position)?.transform;//Chunk.IsChunk(Data.chunkManager.GetChunkSpace(transform.position)).transform;
+        GenericBlock.Blockinit(Data.block_particle,BaseItem.Type, transform.position, RequiredChunk);
 
         // Tell parent chunk to update mesh
 

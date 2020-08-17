@@ -14,69 +14,6 @@ public class Chunk : MonoBehaviour {
 
     public bool chunkState = true;
 
-    private static List<GameObject> Chunks = new List<GameObject>();
-    private static List<Vector3> ChunksLocation = new List<Vector3>();
-
-    
-    /// <summary>
-    /// Convert real space into chunk space
-    /// </summary>
-    /// <param name="realSpace"></param>
-    /// <returns>Vector of the Chunk space coordinates of the chunk(if/not exists)</returns>
-    public static Vector3 GetChunkSpace(Vector3 realSpace)
-    {
-        return new Vector3((int)(realSpace.x / ChunkSize), 0, (int)(realSpace.z / ChunkSize));
-    }
-
-
-    /// <summary>
-    /// Convert real space into chunk space, and report it in realspace
-    /// </summary>
-    /// <param name="realSpace"></param>
-    /// <returns></returns>
-    public static Vector3 GetChunkRealSpace(Vector3 realSpace)
-    {
-        return GetChunkSpace(realSpace)*ChunkSize;
-    }
-
-    /// <summary>
-    /// Create chunk at real space location
-    /// </summary>
-    /// <param name="location"></param>
-    /// <returns></returns>
-    public static GameObject CreateChunk(Vector3 location)
-    {
-        if (!ChunksLocation.Contains(location))
-        {
-            GameObject chunk =  Instantiate(data.chunkPrefab, location,Quaternion.identity);
-            Chunks.Add(chunk);
-            ChunksLocation.Add(location);
-            
-            return chunk;
-        } else {
-            return null;
-        }
-        
-        
-    }
-
-    /// <summary>
-    /// Get GameObject of realspace Chunk
-    /// </summary>
-    /// <param name="location"></param>
-    /// <returns></returns>
-    public static GameObject IsChunk(Vector3 location)
-    {
-        if (Chunk.ChunksLocation.Contains(location))
-        {
-            return Chunk.Chunks.Find(o => location == o.GetComponent<Transform>().position);
-        }
-        else
-        {
-            return null;
-        }
-    }
-
     public static short CalculateHeight(float x, float y)
     {
         short height = 0;
@@ -124,18 +61,18 @@ public class Chunk : MonoBehaviour {
                 
                 short height = Chunk.CalculateHeight(GenesisDisplacement.x + parent.position.x + x, GenesisDisplacement.y + parent.position.z + z);
                 
-                GenericBlock.Blockinit(data.block,blocktypes.Grass, new Vector3(parent.position.x + x, height--, parent.position.z + z),parent,false);      //Build Grass and remove 1 from height
+                GenericBlock.Blockinit(Data.block,blocktypes.Grass, new Vector3(parent.position.x + x, height--, parent.position.z + z),parent,false);      //Build Grass and remove 1 from height
                 
                 for (int y = 0; y <= height; y++)
                 {
                     // Chuck in a block
-                    GenericBlock.Blockinit(data.block,blocktypes.Dirt, new Vector3(parent.position.x + x, y, parent.position.z + z),parent,false);
+                    GenericBlock.Blockinit(Data.block,blocktypes.Dirt, new Vector3(parent.position.x + x, y, parent.position.z + z),parent,false);
                     // Increment numberOfInstances
                 }
                 numberOfInstances++;
 
                 // If the number of instances per frame was met
-                if (numberOfInstances == data.gendegen_rate)
+                if (numberOfInstances == Data.gendegen_rate)
                 {
                     // Reset numberOfInstances
                     numberOfInstances = 0;
@@ -189,7 +126,7 @@ public class Chunk : MonoBehaviour {
             // Preparing materials for the mesh renderer
             if (combineInstances[i].Count > 0)
             {
-                materials.Add(data.materials[i]);
+                materials.Add(Data.materials[i]);
             }
             meshes.Add(new Mesh());
             meshes[meshes.Count - 1].CombineMeshes(combineInstances[meshes.Count - 1].ToArray());

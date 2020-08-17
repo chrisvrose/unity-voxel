@@ -9,6 +9,8 @@ public class Environment : MonoBehaviour
     [Range(1, 8)]
     public int GenerationRadius;
 
+    [Range(1, 8)]
+    public float timeMultiplier;
 
     [Range(-1, 9999)]
     public int seedf;
@@ -23,7 +25,7 @@ public class Environment : MonoBehaviour
         #region Check for seed, and generate one if none
         if (PlayerPrefs.HasKey("seed") && seedf == -1)
         {
-            data.seed = PlayerPrefs.GetInt("seed");
+            Data.seed = PlayerPrefs.GetInt("seed");
             //Debug.Log(seedf);
         }
         else
@@ -33,24 +35,24 @@ public class Environment : MonoBehaviour
         #endregion
 
         #region Load Prefabs and set generation timeslot intervals
-        data.chunkPrefab = Resources.Load("Prefab/Chunk") as GameObject;
-        data.player_prefab = Resources.Load("Prefab/Player") as GameObject;
-        data.block = Resources.Load("Prefab/Block") as GameObject;
-        data.block_particle = Resources.Load("Prefab/particle_block") as GameObject;
-        
+        Data.chunkPrefab = Resources.Load("Prefab/Chunk") as GameObject;
+        Data.player_prefab = Resources.Load("Prefab/Player") as GameObject;
+        Data.block = Resources.Load("Prefab/Block") as GameObject;
+        Data.block_particle = Resources.Load("Prefab/particle_block") as GameObject;
+        Data.chunkManager = GetComponent<ChunkManager>();
 
         for(int i = 0; i < 6; i++)
         {
-            data.materials.Add(Resources.Load("Materials/" + i) as Material);
+            Data.materials.Add(Resources.Load("Materials/" + i) as Material);
         }
 
 
-        data.gendegen_rate = (short)(1f / (4 * Time.deltaTime));
-        data.timeslots = (short)(data.gendegen_rate / 4);
+        Data.gendegen_rate = (short)(1f / (4 * Time.deltaTime));
+        Data.timeslots = (short)(Data.gendegen_rate / 4);
         #endregion
 
         //Start work
-        data.player = Instantiate(data.player_prefab, new Vector3(0, 35*(1+data.timeslots), 0), Quaternion.identity) as GameObject;
+        Data.player = Instantiate(Data.player_prefab, new Vector3(0, 35*(1+Data.timeslots), 0), Quaternion.identity) as GameObject;
         StartCoroutine(Generation());
         StartCoroutine(CycleTime());
         // Managing Chunk states
@@ -66,7 +68,7 @@ public class Environment : MonoBehaviour
     {
         while (true)
         {
-            transform.Rotate(new Vector3(.1f, 0, 0));
+            transform.Rotate(Vector3.right * timeMultiplier);
             //Debug.Log(transform.eulerAngles.x);
             bool night = transform.eulerAngles.x > 180;
             GetComponent<Light>().intensity = !night ? 1:0;
@@ -85,7 +87,7 @@ public class Environment : MonoBehaviour
         while (true)
         {
             //Get current chunk player is in
-            playerchunka = Chunk.GetChunkSpace(data.player.transform.position);
+            playerchunka = ChunkManager.getChunkCoords(Data.player.transform.position);
             
             for(int x = -GenerationRadius; x <= GenerationRadius; x++)
             {
@@ -93,7 +95,7 @@ public class Environment : MonoBehaviour
                 {
                     generateat = (playerchunka + new Vector3(x,0, y))*Chunk.ChunkSize;
 
-                    Chunk.CreateChunk(generateat);
+                    Data.chunkManager.createChunk(generateat);
                     yield return new WaitForSeconds(.05f);
                 }
             }
@@ -117,7 +119,8 @@ public class Environment : MonoBehaviour
             {
                 for (int y = -GenerationRadius; y <= GenerationRadius; y++)
                 {
-                    GameObject i = Chunk.IsChunk(Chunk.GetChunkRealSpace(data.player.transform.position) + new Vector3(x, 0, y) * Chunk.ChunkSize);
+                    //get chunk around player chunks
+                    GameObject i = Data.chunkManager.getChunk(Data.player.transform.position + new Vector3(x,0,y) * ChunkManager.chunkSize);
                     if (i)
                     {
                         ActiveChunks.Add(i);

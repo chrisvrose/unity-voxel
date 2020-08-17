@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     public const float interact_disance = 10f;
     public float camera_sensitivity = 1f;
     public float movement_sensitivity = 2f;
-    public float jump_sensitivity = 1f;
+    public float jump_sensitivity = 10f;
     public const float gravity = 9.81f;
     
     public short selected;
@@ -89,10 +89,10 @@ public class Player : MonoBehaviour
         try_to_move.y = buff -  gravity * Time.deltaTime;
         //Debug.Log(try_to_move.y);
 
+        
         //Do jump stuff and reset y velocity
         if (character.isGrounded) {
-            try_to_move.y = 0+Input.GetAxis("Jump")*jump_sensitivity;
-            
+            try_to_move.y = 0+Input.GetAxis("Jump")*jump_sensitivity;            
         }
         // dS = vdt
         character.Move(try_to_move * Time.deltaTime);
@@ -142,7 +142,7 @@ public class Player : MonoBehaviour
                 //int button = hasPressed[0] ? 0 : 1;
                 RaycastHit hit;
                 Ray ray = myCamera.ScreenPointToRay(new Vector3(myCamera.pixelWidth / 2, myCamera.pixelHeight / 2, 0));
-                if (Physics.Raycast(ray, out hit, interact_disance, data.blocklayermask))
+                if (Physics.Raycast(ray, out hit, interact_disance, Data.blocklayermask))
                 {
                     Transform hit_object = hit.transform;
                     //Debug.Log(hit.normal);
@@ -151,7 +151,7 @@ public class Player : MonoBehaviour
                     {
                         //Debug.Log("Asked to spawn");
                         // Note this convolution here is if not using a block already
-                        Block.Blockinit(data.block,(blocktypes)selected, place_pos, Chunk.IsChunk(Chunk.GetChunkSpace(place_pos)).transform);
+                        Block.Blockinit(Data.block,(blocktypes)selected, place_pos, Data.chunkManager.getChunk(place_pos).transform);
                         // Workaround to lots of math, just get parent of hit
                         //Block.Blockinit(data.block, (blocktypes)selected, place_pos, hit.transform.GetComponentInParent<Transform>());
                     }
@@ -166,7 +166,7 @@ public class Player : MonoBehaviour
             // Reset the request
             hasPressed = new bool[hasPressed.Length];
 
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForFixedUpdate();//WaitForSeconds(0.25f);
         }
     }
 
