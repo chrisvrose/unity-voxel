@@ -14,7 +14,6 @@ public class ChunkManager : MonoBehaviour
     public Dictionary<Vector3Int, GameObject> Chunks;
     // Start is called before the first frame update
 
-
     /// <summary>
     /// Initialize chunk data location
     /// </summary>
@@ -22,7 +21,7 @@ public class ChunkManager : MonoBehaviour
     {
         Chunks = new Dictionary<Vector3Int, GameObject>(new VectorIntEquality());
         //Loaded, now start the generation
-        StartCoroutine(Generation());
+        StartCoroutine(worldGeneration());
     }
 
 
@@ -90,25 +89,11 @@ public class ChunkManager : MonoBehaviour
     }
 
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    IEnumerator abc()
-    {
-        yield return new WaitForSeconds(10);
-        Debug.Log("REEEEEE");
-    }
-
-
-
     /// <summary>
     /// Check if generation required, call required functions then
     /// </summary>
     /// <returns></returns>
-    IEnumerator Generation()
+    IEnumerator worldGeneration()
     {
         Vector3 playerchunka,generateat;
         while (true)
@@ -122,16 +107,10 @@ public class ChunkManager : MonoBehaviour
                 {
                     generateat = playerchunka + new Vector3(x,0, y)*Chunk.ChunkSize;
 
-                    Data.chunkManager.createChunk(generateat);
-                    yield return new WaitForSeconds(.05f);
+                    createChunk(generateat);
+                    yield return new WaitForEndOfFrame();
                 }
             }
-            
-            yield return new WaitForSeconds(.5f);
-            
         }
     }
-
-
-
 }

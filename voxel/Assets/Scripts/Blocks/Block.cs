@@ -5,17 +5,21 @@ using UnityEngine;
 
 public class Block : GenericBlock
 {
-    protected MeshFilter myMeshFilter;
-    protected bool isEnabled;
+    /// <summary>
+    /// Setup transform rays
+    /// </summary>
+    public new void Start(){
+        base.Start();
+        
+    }
+
     /// <summary>
     /// Check if block is surrounded by solid. True if covered
     /// </summary>
     /// <returns></returns>
     public bool isCovered()
     {
-        //bool endstate = true;
-        //Debug.Log(Rays.Length);
-        Ray[] ray = new Ray[6] {
+        Ray[] rays = new Ray[]{
             new Ray(transform.position, transform.up),
             new Ray(transform.position, -transform.up),
             new Ray(transform.position, transform.forward),
@@ -23,12 +27,14 @@ public class Block : GenericBlock
             new Ray(transform.position, transform.right),
             new Ray(transform.position, -transform.right)
         };
-        bool isHidden = Physics.Raycast(ray[0], 1f, Data.hardblocklayermask) && 
-                        Physics.Raycast(ray[1], 1f, Data.hardblocklayermask) && 
-                        Physics.Raycast(ray[2], 1f, Data.hardblocklayermask) && 
-                        Physics.Raycast(ray[3], 1f, Data.hardblocklayermask) && 
-                        Physics.Raycast(ray[4], 1f, Data.hardblocklayermask) && 
-                        Physics.Raycast(ray[5], 1f, Data.hardblocklayermask);
+        //bool endstate = true;
+        //Debug.Log(Rays.Length);
+        bool isHidden = Physics.Raycast(rays[0], 1f, Data.hardblocklayermask) && 
+                        Physics.Raycast(rays[1], 1f, Data.hardblocklayermask) && 
+                        Physics.Raycast(rays[2], 1f, Data.hardblocklayermask) && 
+                        Physics.Raycast(rays[3], 1f, Data.hardblocklayermask) && 
+                        Physics.Raycast(rays[4], 1f, Data.hardblocklayermask) && 
+                        Physics.Raycast(rays[5], 1f, Data.hardblocklayermask);
 
         return isHidden;//return (Physics.Raycast(Rays[0], 1f, data.blocklayermask));        
     }
@@ -42,6 +48,7 @@ public class Block : GenericBlock
 
         // Destroy filter to disable rendering
         gameObject.GetComponent<MeshFilter>().mesh.Clear();
+
         // Update mesh
         transform.GetComponentInParent<Chunk>().StartCoroutine("DelayedUpdateMesh");
         Destroy(this.gameObject);

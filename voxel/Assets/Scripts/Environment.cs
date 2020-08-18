@@ -14,9 +14,6 @@ public class Environment : MonoBehaviour
     [Range(-1, 9999)]
     public int seedf;
 
-    List<GameObject> OldChunks = new List<GameObject>();
-    List<GameObject> ActiveChunks = new List<GameObject>();
-
     // Use this for initialization
     void Start()
     {
@@ -45,8 +42,8 @@ public class Environment : MonoBehaviour
             Data.materials.Add(Resources.Load("Materials/" + i) as Material);
         }
 
-
-        Data.gendegen_rate = (short)(1f / (4 * Time.deltaTime));
+        //On 30 fps that's two instantiate only
+        Data.gendegen_rate = (short)(1f / (15 * Time.deltaTime));
         Data.timeslots = (short)(Data.gendegen_rate / 4);
         #endregion
 
@@ -73,56 +70,6 @@ public class Environment : MonoBehaviour
             GetComponent<Light>().intensity = !night ? 1:0;
             RenderSettings.ambientIntensity = !night ? 0.5f : 0;
             yield return new WaitForSeconds(.1f);
-        }
-    }
-
-    
-
-    /// <summary>
-    /// If player is too far off, disable chunks, and reenable them accordingly.
-    /// </summary>
-    /// <returns></returns>
-    IEnumerator ChangeChunkState()
-    {
-        int GenerationRadius = Data.chunkManager.generationRadius;
-        //yield return new WaitForEndOfFrame();
-        while (true)
-        {
-            //Debug.Log(ChunkManager.GetChunkSpace(data.player.transform.position));
-            for (int x = -GenerationRadius; x <= GenerationRadius; x++)
-            {
-                for (int y = -GenerationRadius; y <= GenerationRadius; y++)
-                {
-                    //get chunk around player chunks
-                    GameObject i = Data.chunkManager.getChunk(Data.player.transform.position + (new Vector3(x,0,y) * ChunkManager.chunkSize));
-                    if (i)
-                    {
-                        ActiveChunks.Add(i);
-                    }
-                }
-
-            }
-
-            // Actively gimp
-            foreach(GameObject x in ActiveChunks)
-            {
-                if (OldChunks.Contains(x))
-                    OldChunks.Remove(x);
-            }
-            
-
-            //Debug.Log(OldChunks.Count);
-
-            foreach (GameObject c in ActiveChunks)
-                c.GetComponent<Chunk>().changeState(true);
-
-            foreach (GameObject c in OldChunks)
-                c.GetComponent<Chunk>().changeState(false);
-
-            OldChunks.Clear();
-            OldChunks.AddRange(ActiveChunks);
-            ActiveChunks.Clear();
-            yield return new WaitForEndOfFrame();
         }
     }
 

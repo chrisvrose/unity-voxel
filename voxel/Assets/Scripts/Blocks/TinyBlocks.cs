@@ -16,8 +16,9 @@ public class TinyBlocks : GenericBlock
         }
     }
     // Use this for initialization
-    protected void Start() 
+    protected new void Start() 
     {
+        base.Start();
         StartCoroutine("killMe");
     }
 

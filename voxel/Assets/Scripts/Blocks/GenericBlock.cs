@@ -15,6 +15,10 @@ public abstract class GenericBlock : MonoBehaviour {
             StartCoroutine(GetComponentInParent<Chunk>().DelayedUpdateMesh());
         }
     }
+
+    public void Start(){
+        
+    }
     
     /// <summary>
     /// Create a block at a given position, within a parent chunk
