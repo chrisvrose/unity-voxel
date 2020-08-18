@@ -42,7 +42,7 @@ public class Chunk : MonoBehaviour {
     void Start()
     {
         // Well, we have created a new chunk. Time to generate it.
-        StartCoroutine(Generate(transform));
+        StartCoroutine(Generate());
     }
 
     /// <summary>
@@ -51,7 +51,7 @@ public class Chunk : MonoBehaviour {
     /// </summary>
     /// <param name="parent"></param>
     /// <returns></returns>
-    IEnumerator Generate(Transform parent){
+    public IEnumerator Generate(){
         short numberOfInstances = 0;
 
         for (int x = 0; x < Chunk.ChunkSize; x++)
@@ -59,14 +59,14 @@ public class Chunk : MonoBehaviour {
             for (int z = 0; z < Chunk.ChunkSize; z++)
             {
                 
-                short height = Chunk.CalculateHeight(GenesisDisplacement.x + parent.position.x + x, GenesisDisplacement.y + parent.position.z + z);
+                short height = Chunk.CalculateHeight(GenesisDisplacement.x + transform.position.x + x, GenesisDisplacement.y + transform.position.z + z);
                 
-                GenericBlock.Blockinit(Data.block,blocktypes.Grass, new Vector3(parent.position.x + x, height--, parent.position.z + z),parent,false);      //Build Grass and remove 1 from height
+                GenericBlock.Blockinit(Data.block,blocktypes.Grass, new Vector3(transform.position.x + x, height--, transform.position.z + z),transform,false);      //Build Grass and remove 1 from height
                 
                 for (int y = 0; y <= height; y++)
                 {
                     // Chuck in a block
-                    GenericBlock.Blockinit(Data.block,blocktypes.Dirt, new Vector3(parent.position.x + x, y, parent.position.z + z),parent,false);
+                    GenericBlock.Blockinit(Data.block,blocktypes.Dirt, new Vector3(transform.position.x + x, y, transform.position.z + z),transform,false);
                     // Increment numberOfInstances
                 }
                 numberOfInstances++;
@@ -81,9 +81,8 @@ public class Chunk : MonoBehaviour {
                 }
             }
         }
-
         // Generation complete, commence a mesh update
-        parent.SendMessage("UpdateMesh");
+        transform.SendMessage("UpdateMesh");
     }
 
     public void UpdateMesh()
@@ -109,15 +108,12 @@ public class Chunk : MonoBehaviour {
             if(i.gameObject.GetComponent<Block>() == null || i.gameObject.GetComponent<MeshFilter>()==null)
             {
                 continue;
-            } else if (i.gameObject.GetComponent<Block>().GetCave())
+            } else if (i.gameObject.GetComponent<Block>().isCovered())
             {
                 continue;
             }
             int index = (int)(i.gameObject.GetComponent<Block>().GetBlockType());
             combineInstances[index].Add(new CombineInstance { mesh = i.sharedMesh, transform = i.transform.localToWorldMatrix * Matrix4x4.Rotate(transform.rotation).inverse * Matrix4x4.Translate(transform.position).inverse });
-            //lastElement.mesh = i.sharedMesh;
-            // Transform to World Coordinates, but relative to the Chunk object by undoing self transformation and rotation
-            //lastElement.transform = i.transform.localToWorldMatrix * Matrix4x4.Rotate(transform.rotation).inverse * Matrix4x4.Translate(transform.position).inverse;
         }
 
         List<Material> materials = new List<Material>();
@@ -141,7 +137,7 @@ public class Chunk : MonoBehaviour {
         Debug.Log("Updated");
     }
 
-    IEnumerator DelayedUpdateMesh()
+    public IEnumerator DelayedUpdateMesh()
     {
         yield return new WaitForEndOfFrame();
         UpdateMesh();

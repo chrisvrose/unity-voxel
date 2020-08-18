@@ -9,9 +9,12 @@ public abstract class GenericBlock : MonoBehaviour {
         {
             return BaseItem;
         }
+        set{
+            BaseItem = item;
+            //update the item
+            StartCoroutine(GetComponentInParent<Chunk>().DelayedUpdateMesh());
+        }
     }
-
-    public static GameObject selfObject = null;
     
     /// <summary>
     /// Create a block at a given position, within a parent chunk
