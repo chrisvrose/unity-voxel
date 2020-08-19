@@ -37,13 +37,7 @@ public abstract class GenericBlock : MonoBehaviour {
         sblock.GetComponent<GenericBlock>().BaseItem = new Item(block);
         //Do some additional setup
         sblock.GetComponent<GenericBlock>().setBlockType(block);
-        Material mat = sblock.GetComponent<Renderer>().material;
         sblock.name = block.ToString()+ " Block";
-        if (mat.GetColor("_EmissionColor") != (new Color(0, 0, 0)))
-        {
-            sblock.GetComponent<Light>().enabled = true;
-            sblock.GetComponent<Light>().color = mat.GetColor("_EmissionColor");
-        }
 
         if (UpdateMesh)
         {
@@ -73,15 +67,19 @@ public abstract class GenericBlock : MonoBehaviour {
     {
         BaseItem.Type = block;
         Material mat = Data.materials[(int)block];
-        GetComponent<Renderer>().material = mat;
+        // Skip this
+        //GetComponent<Renderer>().material = mat;
+        // TODO Check if already done
         if (mat.HasProperty("_Metallic"))
         {
-            GetComponent<ReflectionProbe>().enabled = true;
+            ReflectionProbe rfProbe = gameObject.AddComponent(typeof(ReflectionProbe)) as ReflectionProbe;
+            rfProbe.enabled = true;
         }
         if (mat.GetColor("_EmissionColor") != (new Color(0, 0, 0)))
         {
-            GetComponent<Light>().color = mat.GetColor("_EmissionColor");
-            GetComponent<Light>().enabled = true;
+            Light objectLight = gameObject.AddComponent(typeof(Light)) as Light;
+            objectLight.enabled = true;
+            objectLight.color = mat.GetColor("_EmissionColor");
         }
         // If transparent move to another layer
         if (mat.color.a != 1f) gameObject.layer = 10;
