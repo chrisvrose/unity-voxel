@@ -1,5 +1,7 @@
 # unity-voxel
 
+Available here: [vox.kekvrose.me](https://vox.kekvrose.me)
+
 A try of Unity.
 The name is not entirely valid, as polygons are used, but the basic unit of the world is a block (world-wise).
 Essentially a wannabe Minecraft clone.
@@ -10,8 +12,13 @@ Essentially a wannabe Minecraft clone.
 
 - [X] Infinite Terrain
 - [X] Player Block Interaction
-- [ ] Faster Chunk renders (Batching Meshes?)
+- [X] Faster Chunk renders
 - [ ] Inventory Management? 
+
+# Recent Changes
+
+- Removed unneccesary components to reduce memory consumption
+- (BUG) Wrong block drops
 
 # Building
 
