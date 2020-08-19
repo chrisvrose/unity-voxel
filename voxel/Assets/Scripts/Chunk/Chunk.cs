@@ -12,7 +12,6 @@ public class Chunk : MonoBehaviour {
 
     public static readonly int generateRadius = 2;
 
-    public bool chunkState = true;
 
     // TOD Replace
     public static short CalculateHeight(float x, float y)
@@ -25,10 +24,17 @@ public class Chunk : MonoBehaviour {
         return height;
     }
 
+    public bool setState(bool state){
+        gameObject.SetActive(state);
+        return state;
+    }
+
     void Start()
     {
         // Well, we have created a new chunk. Time to generate it.
         StartCoroutine(Generate());
+        // Be off by default
+        // setState(false);
     }
 
     /// <summary>
@@ -39,7 +45,10 @@ public class Chunk : MonoBehaviour {
     /// <returns></returns>
     public IEnumerator Generate(){
         short numberOfInstances = 0;
-
+        Data.chunkManager.generatingChunksCount++;
+        uint approximateLimit = Data.gendegen_rate / Data.chunkManager.generatingChunksCount;
+        // Debug.Log(approximateLimit);
+        if (approximateLimit<1) approximateLimit = 1;
         for (int x = 0; x < Chunk.ChunkSize; x++)
         {
             for (int z = 0; z < Chunk.ChunkSize; z++)
@@ -58,7 +67,7 @@ public class Chunk : MonoBehaviour {
                 numberOfInstances++;
 
                 // If the number of instances per frame was met
-                if (numberOfInstances == Data.gendegen_rate)
+                if (numberOfInstances == approximateLimit)
                 {
                     // Reset numberOfInstances
                     numberOfInstances = 0;
@@ -68,7 +77,9 @@ public class Chunk : MonoBehaviour {
             }
         }
         // Generation complete, commence a mesh update
+        Data.chunkManager.generatingChunksCount--;
         transform.SendMessage("UpdateMesh");
+        setState(false);
     }
 
     public void UpdateMesh()
@@ -126,7 +137,7 @@ public class Chunk : MonoBehaviour {
         finalMesh.CombineMeshes(finalCombine.ToArray(), false, false);
         transform.GetComponent<MeshFilter>().sharedMesh = finalMesh;
         transform.GetComponent<MeshRenderer>().materials = materials.ToArray();
-        Debug.Log("Updated");
+        // Debug.Log("Updated");
     }
 
     public IEnumerator DelayedUpdateMesh()

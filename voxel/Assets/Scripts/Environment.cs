@@ -43,7 +43,7 @@ public class Environment : MonoBehaviour
         }
 
         //On 30 fps that's two instantiate only
-        Data.gendegen_rate = (short)(1f / (15 * Time.deltaTime));
+        Data.gendegen_rate = (uint)(1f / (15 * Time.deltaTime));
         Data.timeslots = (short)(Data.gendegen_rate / 4);
         #endregion
 

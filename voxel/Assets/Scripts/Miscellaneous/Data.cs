@@ -17,7 +17,7 @@ public static class Data
     public static List<Material> materials = new List<Material>();
     //Generated stuff
     public static int seed;             //Assigned in Environment.cs, access camera through myCamera
-    public static short gendegen_rate;
+    public static uint gendegen_rate;
     public static short timeslots;
     public static int hardblocklayermask = 1 << 9;
     public static int blocklayermask = 1 << 9 | 1 << 10;

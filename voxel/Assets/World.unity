@@ -333,4 +333,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81de751e1ab553a38b6f6cc8298ee866, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  generationRadius: 2
+  generationRadius: 3
+  renderRadius: 2

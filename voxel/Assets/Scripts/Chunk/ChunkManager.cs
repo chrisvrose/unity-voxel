@@ -8,20 +8,29 @@ public class ChunkManager : MonoBehaviour
     static readonly int[] GenesisIntesity = { 2, 16 };
     static readonly float[] GenesisScale = { 8f, 16f };
     public readonly short seedf = 3567;
+
     [Range(1, 8)]
     public int generationRadius;
+    [Range(1, 6)]
+    public int renderRadius;
     public static int chunkSize = 16;
+    
+
     public Dictionary<Vector3Int, GameObject> Chunks;
     // Start is called before the first frame update
-
+    public Dictionary<Vector3Int, GameObject> ActiveChunks;
+    public uint generatingChunksCount = 0;
     /// <summary>
     /// Initialize chunk data location
     /// </summary>
     void Start()
     {
-        Chunks = new Dictionary<Vector3Int, GameObject>(new VectorIntEquality());
+        renderRadius = renderRadius < generationRadius ? renderRadius : generationRadius;
+        Chunks = new Dictionary<Vector3Int, GameObject>(new Vector3IntEquality());
+        ActiveChunks = new Dictionary<Vector3Int, GameObject>(new Vector3IntEquality());
         //Loaded, now start the generation
         StartCoroutine(worldGeneration());
+        StartCoroutine(MaintainActive());
     }
 
 
@@ -48,7 +57,7 @@ public class ChunkManager : MonoBehaviour
                 Chunks.Add(location,chunk);
             }
             catch(ArgumentException){
-                Debug.Log("Could not add Chunk"+location.ToString());
+                Debug.LogError("Could not add Chunk"+location.ToString());
             }
             return chunk;
         }
@@ -96,7 +105,7 @@ public class ChunkManager : MonoBehaviour
     IEnumerator worldGeneration()
     {
         Vector3 playerchunka,generateat;
-        while (true)
+        for(;;)
         {
             //Get current chunk player is in
             playerchunka = ChunkManager.getChunkCoords(Data.player.transform.position);
@@ -112,5 +121,47 @@ public class ChunkManager : MonoBehaviour
                 }
             }
         }
+    }
+
+
+    IEnumerator MaintainActive(){
+        for(;;){
+            var playerLocation = Data.player.transform.position;
+            Vector3Int playerChunkLocation = getChunkCoords(playerLocation);
+            Dictionary<Vector3Int,GameObject> newActiveChunks = new Dictionary<Vector3Int, GameObject>();
+            Vector3Int renderAt;
+            for(int x = -generationRadius; x <= generationRadius; x++)
+            {
+                for(int y = -generationRadius; y <= generationRadius; y++)
+                {
+                    renderAt = playerChunkLocation + new Vector3Int(x,0, y)*Chunk.ChunkSize;
+                    if(Chunks.ContainsKey(renderAt)){
+                        newActiveChunks.Add(renderAt,Chunks[renderAt]);
+                    }
+
+                    
+                }
+
+            }
+            //Done for this frame
+            yield return new WaitForEndOfFrame();
+            //Now find all the old ones
+            foreach(var pair in ActiveChunks){
+                if(newActiveChunks.ContainsKey(pair.Key)){
+                    continue;
+                }
+                pair.Value.GetComponent<Chunk>().setState(false);
+                // pair.Value.SendMessage("setState",value:false);
+            }
+
+            ActiveChunks = newActiveChunks;
+            foreach(var pair in ActiveChunks){
+                pair.Value.GetComponent<Chunk>().setState(true);
+                // pair.Value.SendMessage("setState",value:true);
+            }
+
+
+            yield return new WaitForSeconds(.5f);
+        }   
     }
 }
