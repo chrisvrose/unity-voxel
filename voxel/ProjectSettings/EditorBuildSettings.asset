@@ -8,4 +8,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/World.unity
     guid: eeaefe0039af7f84291cf422a53f14a0
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: df420417195a1764d8cc6032e3b41553,
+      type: 2}
+    xr.sdk.mock-hmd.settings: {fileID: 11400000, guid: 8f7dce9d00510e648a15bae43d855666,
+      type: 2}

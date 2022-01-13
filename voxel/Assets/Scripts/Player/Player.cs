@@ -6,8 +6,11 @@ public class Player : MonoBehaviour
 {
     Texture2D crosshairTexture;
     Rect position;
+    Rect positionCrossLeft;
+    Rect positionCrossRight;
 
     public Camera myCamera;
+    public Transform myCameraHolder;
     public CharacterController character;
 
 
@@ -33,7 +36,9 @@ public class Player : MonoBehaviour
         #region Crosshair
         Cursor.lockState = CursorLockMode.Locked;
         crosshairTexture = new Texture2D(2, 2, TextureFormat.ARGB32, false);
-        position = new Rect((Screen.width - crosshairTexture.width) / 2, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
+        //position = new Rect((Screen.width - crosshairTexture.width) / 2, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
+        positionCrossLeft = new Rect((Screen.width - crosshairTexture.width) / 4, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
+        positionCrossRight = new Rect(3*(Screen.width - crosshairTexture.width) / 4, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
         for (int i = 0; i < 2; i++)
         {
             for (int j = 0; j < 2; j++)
@@ -61,7 +66,8 @@ public class Player : MonoBehaviour
     /// </summary>
     void OnGUI()
     {
-        GUI.DrawTexture(position, crosshairTexture);
+        GUI.DrawTexture(positionCrossLeft, crosshairTexture);
+        GUI.DrawTexture(positionCrossRight, crosshairTexture);
     }
 
     /// <summary>
@@ -74,14 +80,14 @@ public class Player : MonoBehaviour
         camera_rotation -= Input.GetAxis("Mouse Y") * camera_sensitivity;
         
         camera_rotation = Mathf.Clamp(camera_rotation, -89.8f, 89.8f);
-        myCamera.transform.localRotation = Quaternion.Euler(camera_rotation,0,0);
+        myCameraHolder.transform.localRotation = Quaternion.Euler(camera_rotation,0,0);
         
 
         // init velocity
         
         float buff = try_to_move.y;
         try_to_move.Set(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        try_to_move = myCamera.transform.rotation * (try_to_move * movement_sensitivity);
+        try_to_move = myCameraHolder.transform.rotation * (try_to_move * movement_sensitivity);
         
         // Move the spherical coordinates into the x-z plane
         try_to_move = Vector3.ProjectOnPlane(try_to_move, Vector3.up).normalized * try_to_move.magnitude;
