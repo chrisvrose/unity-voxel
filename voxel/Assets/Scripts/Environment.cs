@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class Environment : MonoBehaviour
 {
-    GameObject player;
-
-    
-
     [Range(.03125f, 8)]
     public float timeMultiplier;
-
+    /// <summary>
+    /// Seed for world generation
+    /// </summary>
     [Range(-1, 9999)]
     public int seedf;
 
@@ -32,12 +30,12 @@ public class Environment : MonoBehaviour
 
         #region Load Prefabs and set generation timeslot intervals
         Data.chunkPrefab = Resources.Load("Prefab/Chunk") as GameObject;
-        Data.player_prefab = Resources.Load("Prefab/Player") as GameObject;
-        Data.block = Resources.Load("Prefab/Block") as GameObject;
-        Data.block_particle = Resources.Load("Prefab/particle_block") as GameObject;
+        Data.playerPrefab = Resources.Load("Prefab/Player") as GameObject;
+        Data.blockPrefab = Resources.Load("Prefab/Block") as GameObject;
+        Data.blockParticlePrefab = Resources.Load("Prefab/particle_block") as GameObject;
         Data.chunkManager = GetComponent<ChunkManager>();
 
-        for(int i = 0; i < 6; i++)
+        for(var i = 0; i < 6; i++)
         {
             Data.materials.Add(Resources.Load("Materials/" + i) as Material);
         }
@@ -48,7 +46,7 @@ public class Environment : MonoBehaviour
         #endregion
 
         //Start work
-        Data.player = Instantiate(Data.player_prefab, new Vector3(0, 35*(1+Data.timeslots), 0), Quaternion.identity) as GameObject;
+        Data.player = Instantiate(Data.playerPrefab, new Vector3(0, 35*(1+Data.timeslots), 0), Quaternion.identity) as GameObject;
         // StartCoroutine(Generation());
         StartCoroutine(CycleTime());
         // Managing Chunk states

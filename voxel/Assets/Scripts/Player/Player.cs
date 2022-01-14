@@ -5,7 +5,8 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     Texture2D crosshairTexture;
-    Rect position;
+    
+    
     Rect positionCrossLeft;
     Rect positionCrossRight;
 
@@ -23,8 +24,7 @@ public class Player : MonoBehaviour
     public short selected;
     bool[] hasPressed;
 
-    private Vector3 rotate_vector;
-    private Vector3 movement_vector;
+
     private Vector3 try_to_move;
     private float camera_rotation = 0f;
 
@@ -79,6 +79,7 @@ public class Player : MonoBehaviour
     /// </summary>
     void Update()
     {
+        #region movement
         // Realistic method
         transform.Rotate(0, Input.GetAxis("Mouse X") * camera_sensitivity, 0);
         camera_rotation -= Input.GetAxis("Mouse Y") * camera_sensitivity;
@@ -106,8 +107,9 @@ public class Player : MonoBehaviour
         }
         // dS = vdt
         character.Move(try_to_move * Time.deltaTime);
+        #endregion
 
-
+        #region action queueing
         // This pass helps remove double interactions, when the fps is low
         hasPressed[0] = hasPressed[0] || Input.GetMouseButtonDown(0);
         hasPressed[1] = hasPressed[1] || Input.GetMouseButtonDown(1);
@@ -116,6 +118,7 @@ public class Player : MonoBehaviour
         hasPressed[4] = hasPressed[4] || Input.GetKey("3");
         hasPressed[5] = hasPressed[5] || Input.GetKey("4");
         hasPressed[6] = hasPressed[6] || Input.GetKey("5");
+        #endregion
 
     }
 
@@ -163,7 +166,7 @@ public class Player : MonoBehaviour
                     {
                         //Debug.Log("Asked to spawn");
                         // Note this convolution here is if not using a block already
-                        Block.Blockinit(Data.block,(blocktypes)selected, place_pos, Data.chunkManager.getChunk(place_pos).transform);
+                        Block.Blockinit(Data.blockPrefab,(blocktypes)selected, place_pos, Data.chunkManager.getChunk(place_pos).transform);
                         // Workaround to lots of math, just get parent of hit
                         //Block.Blockinit(data.block, (blocktypes)selected, place_pos, hit.transform.GetComponentInParent<Transform>());
                     }

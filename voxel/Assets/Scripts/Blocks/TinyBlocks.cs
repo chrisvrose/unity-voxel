@@ -7,7 +7,8 @@ public class TinyBlocks : GenericBlock
     private void OnCollisionEnter(Collision collision)
     {
         Debug.LogWarning("Coll Warn"+ collision.collider.name);
-        if (collision.transform == Data.player.transform)
+        //if (collision.transform == Data.player.transform)
+        if(collision.transform.TryGetComponent<Player>( out Player p))
         {
             //data.player.GetComponent<player>().ModifyInventory(getBlockType(), 1);
 

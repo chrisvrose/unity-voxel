@@ -8,17 +8,37 @@ public static class Data
 {
     //Resources
     public static GameObject chunkPrefab;     //Assigned in Environment.cs
-    public static GameObject block;     //Assigned in Environment.cs
-    public static GameObject block_particle;        //Assigned in Environment.cs
-    public static GameObject player_prefab;     //Assigned in Environment.cs
+
+    public static GameObject blockPrefab;     //Assigned in Environment.cs
+    public static GameObject blockParticlePrefab;        //Assigned in Environment.cs
+    /// <summary>
+    /// Player prefab
+    /// </summary>
+    public static GameObject playerPrefab;     //Assigned in Environment.cs
+
+
     //Runtime stuff
     public static GameObject player;        //Assigned in Environment.cs, access camera through myCamera
     public static ChunkManager chunkManager;        //Assigned in Environment
+    /// <summary>
+    /// List of blocktypes that are available for use.
+    /// Assigned in Environment.
+    /// </summary>
     public static List<Material> materials = new List<Material>();
+
+
     //Generated stuff
     public static int seed;             //Assigned in Environment.cs, access camera through myCamera
     public static uint gendegen_rate;
+
     public static short timeslots;
-    public static int hardblocklayermask = 1 << 9;
-    public static int blocklayermask = 1 << 9 | 1 << 10;
+    /// <summary>
+    /// Non transparent layer mask
+    /// </summary>
+    public static int hardBlockLayerMask = 1 << 9;
+    public static int transparentLayerMask = 1 << 10;
+    /// <summary>
+    /// All blocks layer mask
+    /// </summary>
+    public static int blocklayermask = hardBlockLayerMask|transparentLayerMask;
 }

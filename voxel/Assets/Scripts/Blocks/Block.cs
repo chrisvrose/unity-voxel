@@ -29,12 +29,12 @@ public class Block : GenericBlock
         };
         //bool endstate = true;
         //Debug.Log(Rays.Length);
-        bool isHidden = Physics.Raycast(rays[0], 1f, Data.hardblocklayermask) && 
-                        Physics.Raycast(rays[1], 1f, Data.hardblocklayermask) && 
-                        Physics.Raycast(rays[2], 1f, Data.hardblocklayermask) && 
-                        Physics.Raycast(rays[3], 1f, Data.hardblocklayermask) && 
-                        Physics.Raycast(rays[4], 1f, Data.hardblocklayermask) && 
-                        Physics.Raycast(rays[5], 1f, Data.hardblocklayermask);
+        bool isHidden = Physics.Raycast(rays[0], 1f, Data.hardBlockLayerMask) && 
+                        Physics.Raycast(rays[1], 1f, Data.hardBlockLayerMask) && 
+                        Physics.Raycast(rays[2], 1f, Data.hardBlockLayerMask) && 
+                        Physics.Raycast(rays[3], 1f, Data.hardBlockLayerMask) && 
+                        Physics.Raycast(rays[4], 1f, Data.hardBlockLayerMask) && 
+                        Physics.Raycast(rays[5], 1f, Data.hardBlockLayerMask);
 
         return isHidden;//return (Physics.Raycast(Rays[0], 1f, data.blocklayermask));        
     }
@@ -43,13 +43,8 @@ public class Block : GenericBlock
     {
         // Create a tinyblock of the same type of the block to be destroyed'
         Transform RequiredChunk = Data.chunkManager.getChunk(transform.position)?.transform;//Chunk.IsChunk(Data.chunkManager.GetChunkSpace(transform.position)).transform;
-        try
-        {
-            GenericBlock.Blockinit(Data.block_particle, BaseItem.Type, transform.position, RequiredChunk);
-        }
-        catch {
-            Debug.Log("Somethiung sus");
-        }
+
+        GenericBlock.Blockinit(Data.blockParticlePrefab, BaseItem.Type, transform.position, RequiredChunk);
         // Tell parent chunk to update mesh
 
         // Destroy filter to disable rendering

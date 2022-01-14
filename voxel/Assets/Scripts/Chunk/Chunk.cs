@@ -56,12 +56,12 @@ public class Chunk : MonoBehaviour {
                 
                 short height = Chunk.CalculateHeight(GenesisDisplacement.x + transform.position.x + x, GenesisDisplacement.y + transform.position.z + z);
                 
-                GenericBlock.Blockinit(Data.block,blocktypes.Grass, new Vector3(transform.position.x + x, height--, transform.position.z + z),transform,false);      //Build Grass and remove 1 from height
+                GenericBlock.Blockinit(Data.blockPrefab,blocktypes.Grass, new Vector3(transform.position.x + x, height--, transform.position.z + z),transform,false);      //Build Grass and remove 1 from height
                 
                 for (int y = 0; y <= height; y++)
                 {
                     // Chuck in a block
-                    GenericBlock.Blockinit(Data.block,blocktypes.Dirt, new Vector3(transform.position.x + x, y, transform.position.z + z),transform,false);
+                    GenericBlock.Blockinit(Data.blockPrefab,blocktypes.Dirt, new Vector3(transform.position.x + x, y, transform.position.z + z),transform,false);
                     // Increment numberOfInstances
                 }
                 numberOfInstances++;

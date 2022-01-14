@@ -69,8 +69,7 @@ public abstract class GenericBlock : MonoBehaviour {
         BaseItem.Type = block;
         Material mat = Data.materials[(int)block];
         // Skip this
-        Renderer R;
-        if(TryGetComponent<Renderer>(out R))
+        if(TryGetComponent<Renderer>(out Renderer R))
             R.material = mat;
         // TODO Check if already done
         if (mat.HasProperty("_Metallic"))
