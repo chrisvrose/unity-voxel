@@ -156,6 +156,7 @@ public class Player : MonoBehaviour
                 if (Physics.Raycast(ray, out hit, interact_disance, Data.blocklayermask))
                 {
                     Transform hit_object = hit.transform;
+                    Debug.Log("hit");
                     //Debug.Log(hit.normal);
                     Vector3 place_pos = hit_object.position + hit.normal;
                     if (!hasPressed[0])
@@ -171,6 +172,10 @@ public class Player : MonoBehaviour
                         hit.transform.GetComponent<Block>().BlockDestroy();
 
                     }
+                }
+                else
+                {
+                    Debug.Log("Not hit");
                 }
                 
             }

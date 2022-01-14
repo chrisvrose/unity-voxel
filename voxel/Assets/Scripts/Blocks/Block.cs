@@ -43,7 +43,13 @@ public class Block : GenericBlock
     {
         // Create a tinyblock of the same type of the block to be destroyed'
         Transform RequiredChunk = Data.chunkManager.getChunk(transform.position)?.transform;//Chunk.IsChunk(Data.chunkManager.GetChunkSpace(transform.position)).transform;
-        GenericBlock.Blockinit(Data.block_particle,BaseItem.Type, transform.position, RequiredChunk);
+        try
+        {
+            GenericBlock.Blockinit(Data.block_particle, BaseItem.Type, transform.position, RequiredChunk);
+        }
+        catch {
+            Debug.Log("Somethiung sus");
+        }
         // Tell parent chunk to update mesh
 
         // Destroy filter to disable rendering
