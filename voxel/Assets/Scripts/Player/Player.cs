@@ -36,9 +36,13 @@ public class Player : MonoBehaviour
         #region Crosshair
         Cursor.lockState = CursorLockMode.Locked;
         crosshairTexture = new Texture2D(2, 2, TextureFormat.ARGB32, false);
+        var offset = myCamera.stereoSeparation / 2;
+        var p = new Vector3(offset, 0);
+        var camoffset = myCamera.WorldToScreenPoint(p).x;
+        //Debug.Log(camoffset);
         //position = new Rect((Screen.width - crosshairTexture.width) / 2, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
-        positionCrossLeft = new Rect((Screen.width - crosshairTexture.width) / 4, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
-        positionCrossRight = new Rect(3*(Screen.width - crosshairTexture.width) / 4, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
+        positionCrossLeft = new Rect((Screen.width - crosshairTexture.width+ camoffset) / 4, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
+        positionCrossRight = new Rect(3*(Screen.width - crosshairTexture.width- camoffset) / 4, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
         for (int i = 0; i < 2; i++)
         {
             for (int j = 0; j < 2; j++)
@@ -123,6 +127,7 @@ public class Player : MonoBehaviour
         if(hit.gameObject.GetComponent<TinyBlocks>() is TinyBlocks)
         {
             blocktypes blockTypeHere = hit.gameObject.GetComponent<TinyBlocks>().GetBlockType();
+            Debug.Log(blockTypeHere.ToString());
             Destroy(hit.gameObject);
             //inventory
 
