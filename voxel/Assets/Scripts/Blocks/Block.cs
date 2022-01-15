@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Block : GenericBlock
 {
+
     /// <summary>
     /// Setup transform rays
     /// </summary>
@@ -39,12 +40,14 @@ public class Block : GenericBlock
         return isHidden;//return (Physics.Raycast(Rays[0], 1f, data.blocklayermask));        
     }
 
+
+    // TODO fix
     public void BlockDestroy()
     {
         // Create a tinyblock of the same type of the block to be destroyed'
-        Transform RequiredChunk = Data.chunkManager.getChunk(transform.position)?.transform;//Chunk.IsChunk(Data.chunkManager.GetChunkSpace(transform.position)).transform;
+        Transform RequiredChunk =chunkManager.getChunk(transform.position)?.transform;//Chunk.IsChunk(Data.chunkManager.GetChunkSpace(transform.position)).transform;
 
-        GenericBlock.Blockinit(Data.blockParticlePrefab, BaseItem.Type, transform.position, RequiredChunk);
+        //GenericBlock.Blockinit(Data.blockParticlePrefab, BaseItem.Type, transform.position, RequiredChunk);
         // Tell parent chunk to update mesh
 
         // Destroy filter to disable rendering

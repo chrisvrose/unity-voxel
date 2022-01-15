@@ -1,18 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class Player : MonoBehaviour
+
+public class Player : NetworkBehaviour
 {
     Texture2D crosshairTexture;
     
-    
-    Rect positionCrossLeft;
-    Rect positionCrossRight;
+    Vector2 crossHairBounds;
+
+    //Rect positionCrossLeft, positionCrossRight;
+
 
     public Camera myCamera;
     public Transform myCameraHolder;
     public CharacterController character;
+
+
+    ChunkManager chunkManager;
+
 
 
     public const float interact_disance = 10f;
@@ -39,10 +46,11 @@ public class Player : MonoBehaviour
         var offset = myCamera.stereoSeparation / 2;
         var p = new Vector3(offset, 0);
         var camoffset = myCamera.WorldToScreenPoint(p).x;
+        crossHairBounds = new Vector2(crosshairTexture.width, crosshairTexture.height);
         //Debug.Log(camoffset);
         //position = new Rect((Screen.width - crosshairTexture.width) / 2, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
-        positionCrossLeft = new Rect((Screen.width - crosshairTexture.width+ camoffset) / 4, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
-        positionCrossRight = new Rect(3*(Screen.width - crosshairTexture.width- camoffset) / 4, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
+        //positionCrossLeft = new Rect((Screen.width - crosshairTexture.width+ camoffset) / 4, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
+        //positionCrossRight = new Rect(3*(Screen.width - crosshairTexture.width- camoffset) / 4, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
         for (int i = 0; i < 2; i++)
         {
             for (int j = 0; j < 2; j++)
@@ -70,8 +78,24 @@ public class Player : MonoBehaviour
     /// </summary>
     void OnGUI()
     {
-        GUI.DrawTexture(positionCrossLeft, crosshairTexture);
-        GUI.DrawTexture(positionCrossRight, crosshairTexture);
+        Ray ray = myCamera.ScreenPointToRay(new Vector3(myCamera.pixelWidth / 2, myCamera.pixelHeight / 2, 0));
+        if (Physics.Raycast(ray, out RaycastHit hit, interact_disance, Data.blocklayermask))
+        {
+            var hitPosition = hit.point;
+            var leftPoint = myCamera.WorldToScreenPoint(hitPosition,Camera.MonoOrStereoscopicEye.Left);
+            var rightPoint = myCamera.WorldToScreenPoint(hitPosition,Camera.MonoOrStereoscopicEye.Right);
+            Debug.Log(leftPoint + " " + rightPoint+ " "+ myCamera.pixelWidth, this);
+            var leftPos = new Vector2(leftPoint.x/myCamera.pixelWidth* (Screen.width / 2f), leftPoint.y / myCamera.pixelHeight * (Screen.height));
+            var rightPos = new Vector2(rightPoint.x/myCamera.pixelWidth* (Screen.width / 2f)+Screen.width/2f, rightPoint.y / myCamera.pixelHeight * (Screen.height));
+            
+            var leftRect = new Rect(leftPos, crossHairBounds);
+            var rightRect = new Rect(rightPos, crossHairBounds);
+            GUI.DrawTexture(leftRect, crosshairTexture);
+            GUI.DrawTexture(rightRect, crosshairTexture);
+            Debug.Log(":" + myCamera.pixelWidth + " " + Screen.width);
+        }
+        //GUI.DrawTexture(positionCrossLeft, crosshairTexture);
+        //GUI.DrawTexture(positionCrossRight, crosshairTexture);
     }
 
     /// <summary>
@@ -154,9 +178,8 @@ public class Player : MonoBehaviour
             {
                 //Debug.Log("Recorded " + hasPressed[0]);
                 //int button = hasPressed[0] ? 0 : 1;
-                RaycastHit hit;
                 Ray ray = myCamera.ScreenPointToRay(new Vector3(myCamera.pixelWidth / 2, myCamera.pixelHeight / 2, 0));
-                if (Physics.Raycast(ray, out hit, interact_disance, Data.blocklayermask))
+                if (Physics.Raycast(ray, out RaycastHit hit, interact_disance, Data.blocklayermask))
                 {
                     Transform hit_object = hit.transform;
                     Debug.Log("hit");
@@ -166,7 +189,7 @@ public class Player : MonoBehaviour
                     {
                         //Debug.Log("Asked to spawn");
                         // Note this convolution here is if not using a block already
-                        Block.Blockinit(Data.blockPrefab,(blocktypes)selected, place_pos, Data.chunkManager.getChunk(place_pos).transform);
+                        chunkManager.CmdBlockInit(GenericBlock.PlaceBlockType.BLOCK,(blocktypes)selected, place_pos);
                         // Workaround to lots of math, just get parent of hit
                         //Block.Blockinit(data.block, (blocktypes)selected, place_pos, hit.transform.GetComponentInParent<Transform>());
                     }
@@ -189,5 +212,13 @@ public class Player : MonoBehaviour
         }
     }
 
-    
+    [Command]
+    public void CmdBlockInit(GenericBlock.PlaceBlockType placeBlockType, blocktypes block, Vector3 pos, bool UpdateMesh = true)
+    {
+        chunkManager.BlockInit(placeBlockType, block, pos, UpdateMesh);
+    }
+
+
+
+
 }

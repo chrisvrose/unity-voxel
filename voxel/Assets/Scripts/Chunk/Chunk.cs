@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 
-public class Chunk : MonoBehaviour {
+public class Chunk : NetworkBehaviour {
     static readonly int[] GenesisIntesity = { 2,16 };
     static readonly float[] GenesisScale = { 8f, 16f };
     public static short ChunkSize = 16;
@@ -12,7 +13,11 @@ public class Chunk : MonoBehaviour {
 
     public static readonly int generateRadius = 2;
 
+    uint gendegen_rate;
 
+    // parent references
+    Material[] availableMaterials;
+    ChunkManager chunkManager;
     // TOD Replace
     public static short CalculateHeight(float x, float y)
     {
@@ -24,14 +29,22 @@ public class Chunk : MonoBehaviour {
         return height;
     }
 
-    public bool setState(bool state){
-        gameObject.SetActive(state);
-        return state;
-    }
+    //public bool setState(bool state)
+    //{
+    //    gameObject.SetActive(state);
+    //    return state;
+    //}
 
     void Start()
     {
+        if (!isServer) return;
         // Well, we have created a new chunk. Time to generate it.
+        chunkManager = GameObject.FindGameObjectWithTag("WorldLight").GetComponent<ChunkManager>();
+        availableMaterials = chunkManager.availableMaterials;
+        gendegen_rate = (uint)(1f / (15 * Time.deltaTime));
+        if (!isServer) { 
+            return; 
+        }
         StartCoroutine(Generate());
         // Be off by default
         // setState(false);
@@ -43,10 +56,11 @@ public class Chunk : MonoBehaviour {
     /// </summary>
     /// <param name="parent"></param>
     /// <returns></returns>
+    [Server]
     public IEnumerator Generate(){
         short numberOfInstances = 0;
-        Data.chunkManager.generatingChunksCount++;
-        uint approximateLimit = Data.gendegen_rate / Data.chunkManager.generatingChunksCount;
+        chunkManager.generatingChunksCount++;
+        uint approximateLimit = gendegen_rate / chunkManager.generatingChunksCount;
         // Debug.Log(approximateLimit);
         if (approximateLimit<1) approximateLimit = 1;
         for (int x = 0; x < Chunk.ChunkSize; x++)
@@ -56,12 +70,12 @@ public class Chunk : MonoBehaviour {
                 
                 short height = Chunk.CalculateHeight(GenesisDisplacement.x + transform.position.x + x, GenesisDisplacement.y + transform.position.z + z);
                 
-                GenericBlock.Blockinit(Data.blockPrefab,blocktypes.Grass, new Vector3(transform.position.x + x, height--, transform.position.z + z),transform,false);      //Build Grass and remove 1 from height
+                chunkManager.BlockInit(GenericBlock.PlaceBlockType.BLOCK,blocktypes.Grass, new Vector3(transform.position.x + x, height--, transform.position.z + z),false);      //Build Grass and remove 1 from height
                 
                 for (int y = 0; y <= height; y++)
                 {
+                    chunkManager.BlockInit(GenericBlock.PlaceBlockType.BLOCK, blocktypes.Dirt, new Vector3(transform.position.x + x, y, transform.position.z + z), false);
                     // Chuck in a block
-                    GenericBlock.Blockinit(Data.blockPrefab,blocktypes.Dirt, new Vector3(transform.position.x + x, y, transform.position.z + z),transform,false);
                     // Increment numberOfInstances
                 }
                 numberOfInstances++;
@@ -77,11 +91,14 @@ public class Chunk : MonoBehaviour {
             }
         }
         // Generation complete, commence a mesh update
-        Data.chunkManager.generatingChunksCount--;
-        transform.SendMessage("UpdateMesh");
-        setState(false);
+        chunkManager.generatingChunksCount--;
+        // tell all clients to update mesh
+        this.RPCUpdateMesh();
+        //setState(false);
     }
-
+    [ClientRpc]
+    public void RPCUpdateMesh() { UpdateMesh(); }
+    [Client]
     public void UpdateMesh()
     {
         List<Mesh> meshes = new List<Mesh>(6);
@@ -125,7 +142,7 @@ public class Chunk : MonoBehaviour {
             // Preparing materials for the mesh renderer
             if (combineInstances[i].Count > 0)
             {
-                materials.Add(Data.materials[i]);
+                materials.Add(availableMaterials[i]);
             }
             meshes.Add(new Mesh());
             meshes[meshes.Count - 1].CombineMeshes(combineInstances[meshes.Count - 1].ToArray());

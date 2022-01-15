@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Chunk
   - BlockRenderer
+  - WorldLight
   layers:
   - Default
   - TransparentFX
