@@ -9,18 +9,7 @@ public class Item {
     /// <summary>
     /// Set at Item creation, readonly
     /// </summary>
-    protected blocktypes blockType;
-    public blocktypes Type {
-        get
-        {
-            return blockType;
-        }
-        set
-        {
-            blockType = value;
-        }
-    }
-    
+    public blocktypes blockType;
 
     /// <summary>
     /// Item piece creation
@@ -31,6 +20,11 @@ public class Item {
     {
         blockType = b;
         //count = c > 0 ? c : (short)1;
+    }
+
+    public Item()
+    {
+        blockType = blocktypes.Invalid;
     }
 
     /// <summary>

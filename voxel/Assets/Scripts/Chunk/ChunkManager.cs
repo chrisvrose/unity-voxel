@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
+using Mirror;
 
 public class ChunkManager : NetworkBehaviour
 {
@@ -17,9 +17,9 @@ public class ChunkManager : NetworkBehaviour
     public GameObject blockPrefab;
     public GameObject blockParticlePrefab;
 
-    [Range(1, 8)]
+    [Range(0, 8)]
     public int generationRadius;
-    [Range(1, 6)]
+    [Range(0, 6)]
     public int renderRadius;
     public static int chunkSize = 16;
     
@@ -32,15 +32,15 @@ public class ChunkManager : NetworkBehaviour
 
     
     
-    override public void OnStartClient()
-    {
-        //super.OnStartClient();
-        #region register prefab spawning for clients
-        ClientScene.RegisterPrefab(chunkPrefab);
-        ClientScene.RegisterPrefab(blockPrefab);
-        ClientScene.RegisterPrefab(blockParticlePrefab);
-        #endregion
-    }
+    // override public void OnStartClient()
+    // {
+    //     //super.OnStartClient();
+    //     #region register prefab spawning for clients
+    //     // ClientScene.RegisterPrefab(chunkPrefab);
+    //     // ClientScene.RegisterPrefab(blockPrefab);
+    //     // ClientScene.RegisterPrefab(blockParticlePrefab);
+    //     #endregion
+    // }
     /// <summary>
     /// Initialize chunk data location
     /// </summary>
@@ -142,7 +142,7 @@ public class ChunkManager : NetworkBehaviour
             {
                 for(int y = -generationRadius; y <= generationRadius; y++)
                 {
-                    generateat = playerchunka + new Vector3(x,0, y)*Chunk.ChunkSize;
+                    generateat = playerchunka + new Vector3(x,0, y)*Chunk.chunkSize;
 
                     createChunk(generateat);
                     yield return new WaitForEndOfFrame();
@@ -202,22 +202,21 @@ public class ChunkManager : NetworkBehaviour
     /// <param name="parent"></param>
     /// <param name="UpdateMesh"></param>
     [Command]
-    public void CmdBlockInit(GenericBlock.PlaceBlockType placeBlockType, blocktypes block, Vector3 pos, bool UpdateMesh = true)
+    public void CmdBlockInit(GenericBlock.PlaceBlockType placeBlockType, blocktypes block, Vector3 pos)
     {
-        BlockInit(placeBlockType, block, pos, UpdateMesh);
+        BlockInit(placeBlockType, block, pos);
     }
 
     [Server]
-    public void BlockInit(GenericBlock.PlaceBlockType placeBlockType, blocktypes block, Vector3 pos, bool UpdateMesh = true)
+    public void BlockInit(GenericBlock.PlaceBlockType placeBlockType, blocktypes block, Vector3 pos)
     {
         GameObject prefab;
         if (placeBlockType == GenericBlock.PlaceBlockType.BLOCK) prefab = blockPrefab;
         else if (placeBlockType == GenericBlock.PlaceBlockType.TINYBLOCK) prefab = blockParticlePrefab;
         else prefab = blockPrefab;
 
-        var parent = getChunk(pos)?.transform;
-        GameObject returnable =  GenericBlock.Blockinit(prefab, block, pos, parent,availableMaterials, UpdateMesh);
-        NetworkServer.Spawn(returnable);
+        GenericBlock.Blockinit(prefab, block, pos);
+       
         //NetworkServer.Spaw
         //return returnable;
     }

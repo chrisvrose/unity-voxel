@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
+using Mirror;
 
 public class Environment : NetworkBehaviour
 {
@@ -11,6 +11,10 @@ public class Environment : NetworkBehaviour
 
     /// time represented as degrees
     float currentTime;
+
+
+    [Range(0,90)]
+    public float slant;
 
     Light myLightComponent;
     // Use this for initialization
@@ -43,7 +47,24 @@ public class Environment : NetworkBehaviour
         // Managing Chunk states
         //StartCoroutine(ChangeChunkState());
     }
-    
+
+
+    private void Update()
+    {
+        if (!isServer) return;
+        var newTime = currentTime + timeAdder * Time.deltaTime;
+        //transform.Rotate(Vector3.right * timeMultiplier);
+        if ((newTime) > 360) currentTime = 0;
+        else
+        currentTime =newTime;
+
+        transform.rotation = Quaternion.Euler(currentTime, slant * Mathf.Sin(currentTime * Mathf.Deg2Rad), 0);
+        //Debug.Log(transform.eulerAngles.x);
+        bool night = transform.eulerAngles.x > 180;
+        myLightComponent.intensity = !night ? 1 : 0;
+        RenderSettings.ambientIntensity = !night ? 0.5f : 0;
+    }
+
 
     /// <summary>
     /// Cycle through day and night cycles. Change light intensities and ambience to make it look better
@@ -54,16 +75,7 @@ public class Environment : NetworkBehaviour
     {
         while (true)
         {
-            //transform.Rotate(Vector3.right * timeMultiplier);
-            if ((currentTime + timeAdder) > 360) currentTime = 0;
-
-            currentTime += timeAdder;
             
-            transform.rotation = Quaternion.Euler(currentTime, 0, 0);
-            //Debug.Log(transform.eulerAngles.x);
-            bool night = transform.eulerAngles.x > 180;
-            myLightComponent.intensity = !night ? 1:0;
-            RenderSettings.ambientIntensity = !night ? 0.5f : 0;
             yield return new WaitForSeconds(.25f);
         }   
     }

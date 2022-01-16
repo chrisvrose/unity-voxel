@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
+using Mirror;
 
 
 public class Player : NetworkBehaviour
@@ -67,6 +67,8 @@ public class Player : NetworkBehaviour
         //for (int i = 0; i > 5; i++) inventory[i] = 5;
         #endregion
         try_to_move = new Vector3(0, 0, 0);
+        chunkManager = GameObject.FindGameObjectWithTag("WorldLight").GetComponent<ChunkManager>();
+
         character = GetComponent<CharacterController>();
         hasPressed = new bool[7];
         StartCoroutine(PlaceStuff());
@@ -84,7 +86,7 @@ public class Player : NetworkBehaviour
             var hitPosition = hit.point;
             var leftPoint = myCamera.WorldToScreenPoint(hitPosition,Camera.MonoOrStereoscopicEye.Left);
             var rightPoint = myCamera.WorldToScreenPoint(hitPosition,Camera.MonoOrStereoscopicEye.Right);
-            Debug.Log(leftPoint + " " + rightPoint+ " "+ myCamera.pixelWidth, this);
+            //Debug.Log(leftPoint + " " + rightPoint+ " "+ myCamera.pixelWidth, this);
             var leftPos = new Vector2(leftPoint.x/myCamera.pixelWidth* (Screen.width / 2f), leftPoint.y / myCamera.pixelHeight * (Screen.height));
             var rightPos = new Vector2(rightPoint.x/myCamera.pixelWidth* (Screen.width / 2f)+Screen.width/2f, rightPoint.y / myCamera.pixelHeight * (Screen.height));
             
@@ -92,7 +94,7 @@ public class Player : NetworkBehaviour
             var rightRect = new Rect(rightPos, crossHairBounds);
             GUI.DrawTexture(leftRect, crosshairTexture);
             GUI.DrawTexture(rightRect, crosshairTexture);
-            Debug.Log(":" + myCamera.pixelWidth + " " + Screen.width);
+            //Debug.Log(":" + myCamera.pixelWidth + " " + Screen.width);
         }
         //GUI.DrawTexture(positionCrossLeft, crosshairTexture);
         //GUI.DrawTexture(positionCrossRight, crosshairTexture);
@@ -131,6 +133,11 @@ public class Player : NetworkBehaviour
         }
         // dS = vdt
         character.Move(try_to_move * Time.deltaTime);
+        if (transform.position.y < -256)
+        {
+            //clearly fell. lift up 
+            transform.position += 512 * Vector3.up;
+        }
         #endregion
 
         #region action queueing
@@ -147,19 +154,19 @@ public class Player : NetworkBehaviour
     }
 
 
+    // TODO
+    //private void OnControllerColliderHit(ControllerColliderHit hit)
+    //{
+    //    //Debug.Log("HITC:" + hit.transform.name);
+    //    if(hit.gameObject.GetComponent<TinyBlocks>() is TinyBlocks)
+    //    {
+    //        blocktypes blockTypeHere = hit.gameObject.GetComponent<TinyBlocks>().GetBlockType();
+    //        Debug.Log(blockTypeHere.ToString());
+    //        Destroy(hit.gameObject);
+    //        //inventory
 
-    private void OnControllerColliderHit(ControllerColliderHit hit)
-    {
-        //Debug.Log("HITC:" + hit.transform.name);
-        if(hit.gameObject.GetComponent<TinyBlocks>() is TinyBlocks)
-        {
-            blocktypes blockTypeHere = hit.gameObject.GetComponent<TinyBlocks>().GetBlockType();
-            Debug.Log(blockTypeHere.ToString());
-            Destroy(hit.gameObject);
-            //inventory
-
-        }
-    }
+    //    }
+    //}
 
     /// <summary>
     /// Every now and again this enumerator will trigger and do the placements and stuff. 
@@ -189,14 +196,25 @@ public class Player : NetworkBehaviour
                     {
                         //Debug.Log("Asked to spawn");
                         // Note this convolution here is if not using a block already
-                        chunkManager.CmdBlockInit(GenericBlock.PlaceBlockType.BLOCK,(blocktypes)selected, place_pos);
+                        CmdBlockInit(GenericBlock.PlaceBlockType.BLOCK, (blocktypes)selected, place_pos);
                         // Workaround to lots of math, just get parent of hit
                         //Block.Blockinit(data.block, (blocktypes)selected, place_pos, hit.transform.GetComponentInParent<Transform>());
                     }
                     else
                     {
-                        hit.transform.GetComponent<Block>().BlockDestroy();
+                        Debug.Log("Called to Destroy");
+                        if(hit.transform.TryGetComponent<Block>(out Block component))
+                        {
+                            var netid = component.netId;
+                            Debug.Log("Block found with netid:"+ netid);
 
+                            CmdBlockDestroy(netid);
+                        }
+                        else
+                        {
+                            Debug.LogWarning("No Block on hit component", hit.transform);
+                        }
+                        
                     }
                 }
                 else
@@ -207,18 +225,27 @@ public class Player : NetworkBehaviour
             }
             // Reset the request
             hasPressed = new bool[hasPressed.Length];
-
+            
             yield return new WaitForFixedUpdate();//WaitForSeconds(0.25f);
         }
     }
 
     [Command]
-    public void CmdBlockInit(GenericBlock.PlaceBlockType placeBlockType, blocktypes block, Vector3 pos, bool UpdateMesh = true)
+    public void CmdBlockInit(GenericBlock.PlaceBlockType placeBlockType, blocktypes block, Vector3 pos)
     {
-        chunkManager.BlockInit(placeBlockType, block, pos, UpdateMesh);
+        chunkManager.BlockInit(placeBlockType, block, pos);
     }
+    /// <summary>
+    /// Delete a block
+    /// </summary>
+    /// <param name="netid">netid of the block</param>
+    [Command]
+    public void CmdBlockDestroy(uint netid)
+    {
+        Debug.Log("Called to destroy:" + netid);
 
-
+        NetworkServer.spawned[netid].GetComponent<Block>()?.BlockDestroy();
+    }
 
 
 }

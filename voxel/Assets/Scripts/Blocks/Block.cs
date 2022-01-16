@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
 
 public class Block : GenericBlock
@@ -42,20 +43,22 @@ public class Block : GenericBlock
 
 
     // TODO fix
+    [Server]
     public void BlockDestroy()
     {
         // Create a tinyblock of the same type of the block to be destroyed'
-        Transform RequiredChunk =chunkManager.getChunk(transform.position)?.transform;//Chunk.IsChunk(Data.chunkManager.GetChunkSpace(transform.position)).transform;
+        //Transform RequiredChunk =chunkManager.getChunk(transform.position)?.transform;//Chunk.IsChunk(Data.chunkManager.GetChunkSpace(transform.position)).transform;
 
-        //GenericBlock.Blockinit(Data.blockParticlePrefab, BaseItem.Type, transform.position, RequiredChunk);
+        chunkManager.BlockInit(PlaceBlockType.TINYBLOCK, blockType, transform.position);
         // Tell parent chunk to update mesh
 
         // Destroy filter to disable rendering
-        gameObject.GetComponent<MeshFilter>().mesh.Clear();
+        //gameObject.GetComponent<MeshFilter>().mesh.Clear();
 
         // Update mesh
-        transform.GetComponentInParent<Chunk>().StartCoroutine("DelayedUpdateMesh");
-        Destroy(this.gameObject);
+        //transform.GetComponentInParent<Chunk>().StartCoroutine("DelayedUpdateMesh");
+        //Destroy(this.gameObject);
+        NetworkServer.Destroy(this.gameObject);
         //Sorcery   
     }
 }

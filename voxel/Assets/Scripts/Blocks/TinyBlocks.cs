@@ -11,7 +11,6 @@ public class TinyBlocks : GenericBlock
         if(collision.transform.TryGetComponent<Player>( out Player p))
         {
             //data.player.GetComponent<player>().ModifyInventory(getBlockType(), 1);
-
             Destroy(transform);
             //print( GetBlockType() );
         }
