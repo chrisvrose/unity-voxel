@@ -20,12 +20,17 @@ public class Player : NetworkBehaviour
 
     ChunkManager chunkManager;
 
+    /// <summary>
+    /// Server controlled list of players
+    /// </summary>
+    public static readonly List<Player> playersList = new List<Player>();
+
 
 
     public const float interactDistance = 10f;
     public float cameraSensitivity = 1f;
-    public const float movementSensitivity = 2f;
-    public const float jumpSensitivity = 10f;
+    public const float movementSensitivity = 2.5f;
+    public const float jumpSensitivity = 4.6f;
     public const float gravity = 9.81f;
     
     public short selected;
@@ -35,6 +40,20 @@ public class Player : NetworkBehaviour
     private Vector3 try_to_move;
     private float camera_rotation = 0f;
 
+
+    [ServerCallback]
+    public override void OnStartServer()
+    {
+        //base.OnStartServer();
+        playersList.Add(this);
+    }
+    [ServerCallback]
+    public override void OnStopServer()
+    {
+        //base.OnStopServer();
+
+        playersList.Remove(this);
+    }
     /// <summary>
     /// Universal usable variables, setup
     /// </summary>
@@ -135,26 +154,27 @@ public class Player : NetworkBehaviour
         character.Move(try_to_move * Time.deltaTime);
         if (transform.position.y < -256)
         {
-            //clearly fell. lift up 
+            //clearly fell. lift up and reset velocity
             transform.position += 512 * Vector3.up;
+            try_to_move.y = 0;
         }
         #endregion
 
         #region action queueing
         // This pass helps remove double interactions, when the fps is low
-        hasPressed[0] = hasPressed[0] || Input.GetMouseButtonDown(0);
-        hasPressed[1] = hasPressed[1] || Input.GetMouseButtonDown(1);
-        hasPressed[2] = hasPressed[2] || Input.GetKey("1");
-        hasPressed[3] = hasPressed[3] || Input.GetKey("2");
-        hasPressed[4] = hasPressed[4] || Input.GetKey("3");
-        hasPressed[5] = hasPressed[5] || Input.GetKey("4");
-        hasPressed[6] = hasPressed[6] || Input.GetKey("5");
+        hasPressed[0] |= Input.GetMouseButtonDown(0);
+        hasPressed[1] |= Input.GetMouseButtonDown(1);
+        hasPressed[2] |= Input.GetKey("1");
+        hasPressed[3] |= Input.GetKey("2");
+        hasPressed[4] |= Input.GetKey("3");
+        hasPressed[5] |= Input.GetKey("4");
+        hasPressed[6] |= Input.GetKey("5");
         #endregion
 
     }
 
 
-    
+
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         //Debug.Log("HITC:" + hit.transform.name);
@@ -232,6 +252,7 @@ public class Player : NetworkBehaviour
                 }
                 
             }
+            
             // Reset the request
             hasPressed = new bool[hasPressed.Length];
             

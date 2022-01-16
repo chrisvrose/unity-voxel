@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class Generator 
 {
-    protected static readonly Vector3 GenesisIntesity = new Vector3(2,4,16);
-    protected static readonly Vector3 GenesisScale = new Vector3(1/2f,1/4f,1/8f);
+    protected static readonly Vector3 GenesisIntesity = new Vector3(2,16);
+    protected static readonly Vector3 GenesisScale = new Vector3(8f,16f);
+    public const short chunkSize = 16;
+
 
     public static short CalculateHeight(float x, float y)
     {

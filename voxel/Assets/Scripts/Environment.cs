@@ -27,11 +27,6 @@ public class Environment : NetworkBehaviour
         currentTime = 0;
         myLightComponent = GetComponent<Light>();
         #region Load Prefabs and set generation timeslot intervals
-        //Data.chunkPrefab = Resources.Load("Prefab/Chunk") as GameObject;
-        //Data.playerPrefab = Resources.Load("Prefab/Player") as GameObject;
-        Data.blockPrefab = Resources.Load("Prefab/Block") as GameObject;
-        Data.blockParticlePrefab = Resources.Load("Prefab/particle_block") as GameObject;
-        //Data.chunkManager = GetComponent<ChunkManager>();
 
 
 

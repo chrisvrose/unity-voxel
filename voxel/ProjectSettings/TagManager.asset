@@ -7,6 +7,7 @@ TagManager:
   - Chunk
   - BlockRenderer
   - WorldLight
+  - NetworkMgr
   layers:
   - Default
   - TransparentFX

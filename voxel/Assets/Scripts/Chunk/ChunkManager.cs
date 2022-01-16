@@ -30,17 +30,6 @@ public class ChunkManager : NetworkBehaviour
     //public Dictionary<Vector3Int, GameObject> ActiveChunks;
     public uint generatingChunksCount = 0;
 
-    
-    
-    // override public void OnStartClient()
-    // {
-    //     //super.OnStartClient();
-    //     #region register prefab spawning for clients
-    //     // ClientScene.RegisterPrefab(chunkPrefab);
-    //     // ClientScene.RegisterPrefab(blockPrefab);
-    //     // ClientScene.RegisterPrefab(blockParticlePrefab);
-    //     #endregion
-    // }
     /// <summary>
     /// Initialize chunk data location
     /// </summary>
@@ -65,7 +54,7 @@ public class ChunkManager : NetworkBehaviour
     [Server]
     public GameObject createChunk(Vector3 location)
     {
-        return createChunk( getChunkCoords(location) );
+        return CreateChunkIfNotExists( getChunkCoords(location) );
         
     }
     /// <summary>
@@ -74,7 +63,7 @@ public class ChunkManager : NetworkBehaviour
     /// <param name="location">Exact Coordinate</param>
     /// <returns></returns>
     [Server]
-    public GameObject createChunk(Vector3Int location){
+    public GameObject CreateChunkIfNotExists(Vector3Int location){
         if (!Chunks.ContainsKey(location))
         {
             GameObject chunk = Instantiate(chunkPrefab, location, Quaternion.identity);
@@ -83,28 +72,9 @@ public class ChunkManager : NetworkBehaviour
                 Chunks.Add(location,chunk);
             }
             catch(ArgumentException){
-                Debug.LogError("Could not add Chunk"+location.ToString());
+                Debug.LogError("Could not add Chunk:"+location.ToString());
             }
             return chunk;
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    /// <summary>
-    /// Get GameObject of realspace Chunk
-    /// </summary>
-    /// <param name="location"></param>
-    /// <returns></returns>
-    [Server]
-    public GameObject getChunk(Vector3 location)
-    {
-        Vector3Int locationInteger = getChunkCoords(location);
-        if (Chunks.ContainsKey(locationInteger))
-        {
-            return Chunks[locationInteger];
         }
         else
         {
@@ -132,66 +102,45 @@ public class ChunkManager : NetworkBehaviour
     [Server]
     IEnumerator worldGeneration()
     {
-        Vector3 playerchunka,generateat;
+        // a container for the chunks that will be required to be created
+        HashSet<Vector3Int> requiredChunksToBeLoaded;
         for(;;)
         {
-            //Get current chunk player is in
-            playerchunka = ChunkManager.getChunkCoords( Vector3.zero);
-            
-            for(int x = -generationRadius; x <= generationRadius; x++)
+            /*
+             * Two step process - 
+             * 1. Using playerList create a set of required creations. Hashset should dedup them
+             * 2. Schedule these for Creation
+             * 3. Repeat everything as you need
+             */
+            // step 1
+            requiredChunksToBeLoaded = new HashSet<Vector3Int>();
+            foreach(var player in Player.playersList)
             {
-                for(int y = -generationRadius; y <= generationRadius; y++)
+                //get players position
+                var playerChunk = ChunkManager.getChunkCoords( player.transform.position);
+                for (int x = -generationRadius; x <= generationRadius; x++)
                 {
-                    generateat = playerchunka + new Vector3(x,0, y)*Chunk.chunkSize;
-
-                    createChunk(generateat);
-                    yield return new WaitForEndOfFrame();
+                    for (int y = -generationRadius; y <= generationRadius; y++)
+                    {
+                        requiredChunksToBeLoaded.Add(playerChunk + new Vector3Int(x, 0, y) * Generator.chunkSize);
+                    }
                 }
+             }
+
+            //step 2
+            foreach(var chunkLocations in requiredChunksToBeLoaded)
+            {
+                createChunk(chunkLocations);
+                // Delayed each instance to save some processor
+                yield return new WaitForEndOfFrame();
             }
+            //step 3
+            yield return new WaitForEndOfFrame();
+
+            
         }
     }
 
-    //[Client,Obsolete]
-    //IEnumerator MaintainActive(){
-    //    for(;;){
-    //        var playerLocation = Data.player.transform.position;
-    //        Vector3Int playerChunkLocation = getChunkCoords(playerLocation);
-    //        Dictionary<Vector3Int,GameObject> newActiveChunks = new Dictionary<Vector3Int, GameObject>();
-    //        Vector3Int renderAt;
-    //        for(int x = -generationRadius; x <= generationRadius; x++)
-    //        {
-    //            for(int y = -generationRadius; y <= generationRadius; y++)
-    //            {
-    //                renderAt = playerChunkLocation + new Vector3Int(x,0, y)*Chunk.ChunkSize;
-    //                if(Chunks.ContainsKey(renderAt)){
-    //                    newActiveChunks.Add(renderAt,Chunks[renderAt]);
-    //                }
-
-                    
-    //            }
-
-    //        }
-    //        //Done for this frame
-    //        yield return new WaitForEndOfFrame();
-    //        //Now find all the old ones
-    //        foreach(var pair in ActiveChunks){
-    //            if(newActiveChunks.ContainsKey(pair.Key)){
-    //                continue;
-    //            }
-    //            pair.Value.GetComponent<Chunk>().setState(false);
-    //            // pair.Value.SendMessage("setState",value:false);
-    //        }
-
-    //        ActiveChunks = newActiveChunks;
-    //        foreach(var pair in ActiveChunks){
-    //            pair.Value.GetComponent<Chunk>().setState(true);
-    //            // pair.Value.SendMessage("setState",value:true);
-    //        }
-
-
-    //        yield return new WaitForSeconds(.5f);
-    //    }   
-    //}
 
     /// <summary>
     /// Command for Clients to create a block
@@ -217,7 +166,5 @@ public class ChunkManager : NetworkBehaviour
 
         GenericBlock.Blockinit(prefab, block, pos);
        
-        //NetworkServer.Spaw
-        //return returnable;
     }
 }
