@@ -22,10 +22,10 @@ public class Player : NetworkBehaviour
 
 
 
-    public const float interact_disance = 10f;
-    public float camera_sensitivity = 1f;
-    public float movement_sensitivity = 2f;
-    public float jump_sensitivity = 10f;
+    public const float interactDistance = 10f;
+    public float cameraSensitivity = 1f;
+    public const float movementSensitivity = 2f;
+    public const float jumpSensitivity = 10f;
     public const float gravity = 9.81f;
     
     public short selected;
@@ -81,7 +81,7 @@ public class Player : NetworkBehaviour
     void OnGUI()
     {
         Ray ray = myCamera.ScreenPointToRay(new Vector3(myCamera.pixelWidth / 2, myCamera.pixelHeight / 2, 0));
-        if (Physics.Raycast(ray, out RaycastHit hit, interact_disance, Data.blocklayermask))
+        if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, Data.blocklayermask))
         {
             var hitPosition = hit.point;
             var leftPoint = myCamera.WorldToScreenPoint(hitPosition,Camera.MonoOrStereoscopicEye.Left);
@@ -107,8 +107,8 @@ public class Player : NetworkBehaviour
     {
         #region movement
         // Realistic method
-        transform.Rotate(0, Input.GetAxis("Mouse X") * camera_sensitivity, 0);
-        camera_rotation -= Input.GetAxis("Mouse Y") * camera_sensitivity;
+        transform.Rotate(0, Input.GetAxis("Mouse X") * cameraSensitivity, 0);
+        camera_rotation -= Input.GetAxis("Mouse Y") * cameraSensitivity;
         
         camera_rotation = Mathf.Clamp(camera_rotation, -89.8f, 89.8f);
         myCameraHolder.transform.localRotation = Quaternion.Euler(camera_rotation,0,0);
@@ -118,7 +118,7 @@ public class Player : NetworkBehaviour
         
         float buff = try_to_move.y;
         try_to_move.Set(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        try_to_move = myCameraHolder.transform.rotation * (try_to_move * movement_sensitivity);
+        try_to_move = myCameraHolder.transform.rotation * (try_to_move * movementSensitivity);
         
         // Move the spherical coordinates into the x-z plane
         try_to_move = Vector3.ProjectOnPlane(try_to_move, Vector3.up).normalized * try_to_move.magnitude;
@@ -129,7 +129,7 @@ public class Player : NetworkBehaviour
         
         //Do jump stuff and reset y velocity
         if (character.isGrounded) {
-            try_to_move.y = 0+Input.GetAxis("Jump")*jump_sensitivity;            
+            try_to_move.y = 0+Input.GetAxis("Jump")*jumpSensitivity;            
         }
         // dS = vdt
         character.Move(try_to_move * Time.deltaTime);
@@ -197,7 +197,7 @@ public class Player : NetworkBehaviour
                 //Debug.Log("Recorded " + hasPressed[0]);
                 //int button = hasPressed[0] ? 0 : 1;
                 Ray ray = myCamera.ScreenPointToRay(new Vector3(myCamera.pixelWidth / 2, myCamera.pixelHeight / 2, 0));
-                if (Physics.Raycast(ray, out RaycastHit hit, interact_disance, Data.blocklayermask))
+                if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, Data.blocklayermask))
                 {
                     Transform hit_object = hit.transform;
                     //Debug.Log("hit");
@@ -221,7 +221,7 @@ public class Player : NetworkBehaviour
                         }
                         else
                         {
-                            Debug.LogWarning("No Block on hit component", hit.transform);
+                            Debug.Log("No Block on hit component", hit.transform);
                         }
                         
                     }
@@ -251,7 +251,7 @@ public class Player : NetworkBehaviour
     [Command]
     public void CmdBlockDestroy(uint netid)
     {
-        NetworkServer.spawned[netid].TryGetComponent(out Block block){ 
+        if(NetworkServer.spawned[netid].TryGetComponent(out Block block)){ 
             block.BlockDestroy();
         }
     }
