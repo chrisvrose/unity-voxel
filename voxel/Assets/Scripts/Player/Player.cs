@@ -154,19 +154,30 @@ public class Player : NetworkBehaviour
     }
 
 
-    // TODO
-    //private void OnControllerColliderHit(ControllerColliderHit hit)
-    //{
-    //    //Debug.Log("HITC:" + hit.transform.name);
-    //    if(hit.gameObject.GetComponent<TinyBlocks>() is TinyBlocks)
-    //    {
-    //        blocktypes blockTypeHere = hit.gameObject.GetComponent<TinyBlocks>().GetBlockType();
-    //        Debug.Log(blockTypeHere.ToString());
-    //        Destroy(hit.gameObject);
-    //        //inventory
+    
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        //Debug.Log("HITC:" + hit.transform.name);
+        if (isClient && hit.gameObject.TryGetComponent(out TinyBlocks tinyblock))
+        {
+            //hit.gameObject.GetComponent<TinyBlocks>()
+            blocktypes blockTypeHere = tinyblock.GetBlockType();
+            uint netid = tinyblock.netId;
+            //Debug.Log(blockTypeHere.ToString());
+            CmdTinyBlockCollided(netid);
+            
+            //TODO inventory
 
-    //    }
-    //}
+        }
+    }
+    [Command]
+    private void CmdTinyBlockCollided(uint netid)
+    {
+        if(NetworkServer.spawned[netid].TryGetComponent(out TinyBlocks tb))
+        {
+            tb.Terminate();
+        }
+    }
 
     /// <summary>
     /// Every now and again this enumerator will trigger and do the placements and stuff. 
@@ -189,24 +200,22 @@ public class Player : NetworkBehaviour
                 if (Physics.Raycast(ray, out RaycastHit hit, interact_disance, Data.blocklayermask))
                 {
                     Transform hit_object = hit.transform;
-                    Debug.Log("hit");
+                    //Debug.Log("hit");
                     //Debug.Log(hit.normal);
                     Vector3 place_pos = hit_object.position + hit.normal;
                     if (!hasPressed[0])
                     {
-                        //Debug.Log("Asked to spawn");
-                        // Note this convolution here is if not using a block already
-                        CmdBlockInit(GenericBlock.PlaceBlockType.BLOCK, (blocktypes)selected, place_pos);
-                        // Workaround to lots of math, just get parent of hit
-                        //Block.Blockinit(data.block, (blocktypes)selected, place_pos, hit.transform.GetComponentInParent<Transform>());
+                        // only place blocks if the hit was a Block
+                        if (hit.transform.TryGetComponent(out Block component))
+                            CmdBlockInit(GenericBlock.PlaceBlockType.BLOCK, (blocktypes)selected, place_pos);
                     }
                     else
                     {
-                        Debug.Log("Called to Destroy");
-                        if(hit.transform.TryGetComponent<Block>(out Block component))
+                        //Debug.Log("Called to Destroy");
+                        if(hit.transform.TryGetComponent(out Block component))
                         {
                             var netid = component.netId;
-                            Debug.Log("Block found with netid:"+ netid);
+                            //Debug.Log("Block found with netid:"+ netid);
 
                             CmdBlockDestroy(netid);
                         }
@@ -242,9 +251,9 @@ public class Player : NetworkBehaviour
     [Command]
     public void CmdBlockDestroy(uint netid)
     {
-        Debug.Log("Called to destroy:" + netid);
-
-        NetworkServer.spawned[netid].GetComponent<Block>()?.BlockDestroy();
+        NetworkServer.spawned[netid].TryGetComponent(out Block block){ 
+            block.BlockDestroy();
+        }
     }
 
 

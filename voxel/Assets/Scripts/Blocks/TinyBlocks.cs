@@ -5,17 +5,7 @@ using Mirror;
 
 public class TinyBlocks : GenericBlock
 {
-    private void OnCollisionEnter(Collision collision)
-    {
-        Debug.LogWarning("Coll Warn"+ collision.collider.name);
-        //if (collision.transform == Data.player.transform)
-        if(collision.transform.TryGetComponent( out Player p))
-        {
-            //data.player.GetComponent<player>().ModifyInventory(getBlockType(), 1);
-            //Destroy(transform);
-            //print( GetBlockType() );
-        }
-    }
+    
     // Use this for initialization
     public new void Start() 
     {
@@ -24,6 +14,15 @@ public class TinyBlocks : GenericBlock
         StartCoroutine(killMe());
     }
 
+
+    /// <summary>
+    /// commit toaster bath
+    /// </summary>
+    [Server]
+    public void Terminate()
+    {
+        NetworkServer.Destroy(gameObject);
+    }
     IEnumerator killMe()
     {
         float randomValue = Random.value;
