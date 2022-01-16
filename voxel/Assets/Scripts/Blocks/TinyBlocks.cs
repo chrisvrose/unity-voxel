@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
 public class TinyBlocks : GenericBlock
 {
@@ -8,18 +9,19 @@ public class TinyBlocks : GenericBlock
     {
         Debug.LogWarning("Coll Warn"+ collision.collider.name);
         //if (collision.transform == Data.player.transform)
-        if(collision.transform.TryGetComponent<Player>( out Player p))
+        if(collision.transform.TryGetComponent( out Player p))
         {
             //data.player.GetComponent<player>().ModifyInventory(getBlockType(), 1);
-            Destroy(transform);
+            //Destroy(transform);
             //print( GetBlockType() );
         }
     }
     // Use this for initialization
-    protected new void Start() 
+    public new void Start() 
     {
         base.Start();
-        StartCoroutine("killMe");
+        if (!isServer) return;
+        StartCoroutine(killMe());
     }
 
     IEnumerator killMe()
@@ -27,6 +29,7 @@ public class TinyBlocks : GenericBlock
         float randomValue = Random.value;
         //Debug.Log(randomValue);
         yield return new WaitForSeconds(randomValue * 200f);
-        Destroy(gameObject);
+        NetworkServer.Destroy(gameObject);
+        //Destroy(gameObject);
     }
 }

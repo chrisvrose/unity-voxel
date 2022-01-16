@@ -42,26 +42,16 @@ public abstract class GenericBlock : NetworkBehaviour {
     [Server]
     public static void Blockinit(GameObject prefab,blocktypes block, Vector3 pos)
     {
-        //if (prefab == null) prefab = data.block;
         //GameObject sblock = Instantiate(prefab, pos, Quaternion.identity, parent);
         GameObject sblock = Instantiate(prefab, pos, Quaternion.identity);
         
         NetworkServer.Spawn(sblock);
-        //NetworkServer.
+        
         var gb = sblock.GetComponent<GenericBlock>();
 
+        // dirty this, and update the mesh
         gb.blockType = block;
-        //Do some additional setup
-        //sblock.GetComponent<GenericBlock>().setBlockTypeClientRpc(block);
 
-        //sblock.name = block.ToString()+ " Block";
-
-        //if (UpdateMesh)
-        //{
-        //    Transform p = parent;
-        //    p.GetComponent<Chunk>().UpdateMesh();
-        //}
-        //return sblock;
     }
 
 
