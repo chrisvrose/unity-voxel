@@ -17,6 +17,8 @@ public class DistanceBasedInterestManagementWithExceptions : InterestManagement
     public float rebuildInterval = 1;
     double lastRebuildTime;
 
+    Vector3Int mask = Vector3Int.one - Vector3Int.up;
+
     // helper function to get vis range for a given object, or default.
     int GetVisRange(NetworkIdentity identity)
     {
@@ -45,7 +47,8 @@ public class DistanceBasedInterestManagementWithExceptions : InterestManagement
         // just skip if the object is a network transform
         if (isException) return true;
         int range = GetVisRange(identity);
-        var distvec = identity.transform.position - newObserver.identity.transform.position;
+        
+        var distvec = Vector3.Scale(identity.transform.position - newObserver.identity.transform.position,mask);
         return distvec.sqrMagnitude < range;
     }
 
@@ -70,7 +73,7 @@ public class DistanceBasedInterestManagementWithExceptions : InterestManagement
             if (conn != null && conn.isAuthenticated && conn.identity != null)
             {
                 // check distance, skip check if exception
-                if (isException||((conn.identity.transform.position- position).sqrMagnitude < range))
+                if (isException||(Vector3.Scale(conn.identity.transform.position- position,mask).sqrMagnitude < range))
                 {
                     newObservers.Add(conn);
                 }

@@ -193,7 +193,7 @@ public class Player : NetworkBehaviour
     [Command]
     private void CmdTinyBlockCollided(uint netid)
     {
-        if(NetworkServer.spawned[netid].TryGetComponent(out TinyBlocks tb))
+        if(NetworkServer.spawned.TryGetValue(netid, out NetworkIdentity obj) && obj.TryGetComponent(out TinyBlocks tb))
         {
             tb.Terminate();
         }
@@ -272,7 +272,7 @@ public class Player : NetworkBehaviour
     [Command]
     public void CmdBlockDestroy(uint netid)
     {
-        if(NetworkServer.spawned[netid].TryGetComponent(out Block block)){ 
+        if(NetworkServer.spawned.TryGetValue(netid, out NetworkIdentity obj) && obj.TryGetComponent(out Block block)){ 
             block.BlockDestroy();
         }
     }

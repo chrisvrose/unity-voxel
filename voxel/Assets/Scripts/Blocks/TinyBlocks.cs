@@ -21,14 +21,14 @@ public class TinyBlocks : GenericBlock
     [Server]
     public void Terminate()
     {
-        NetworkServer.Destroy(gameObject);
+        NetworkServer.Destroy(this.gameObject);
     }
     IEnumerator killMe()
     {
         float randomValue = Random.value;
         //Debug.Log(randomValue);
         yield return new WaitForSeconds(randomValue * 200f);
-        NetworkServer.Destroy(gameObject);
+        NetworkServer.Destroy(this.gameObject);
         //Destroy(gameObject);
     }
 }
