@@ -10,7 +10,7 @@ public class Player : NetworkBehaviour
     
     Vector2 crossHairBounds;
 
-    //Rect positionCrossLeft, positionCrossRight;
+    Rect crosshairPosition;
 
 
     public Camera myCamera;
@@ -67,9 +67,9 @@ public class Player : NetworkBehaviour
         var camoffset = myCamera.WorldToScreenPoint(p).x;
         crossHairBounds = new Vector2(crosshairTexture.width, crosshairTexture.height);
         //Debug.Log(camoffset);
-        //position = new Rect((Screen.width - crosshairTexture.width) / 2, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
-        //positionCrossLeft = new Rect((Screen.width - crosshairTexture.width+ camoffset) / 4, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
-        //positionCrossRight = new Rect(3*(Screen.width - crosshairTexture.width- camoffset) / 4, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
+        crosshairPosition = new Rect((Screen.width - crosshairTexture.width) / 2, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
+        // positionCrossLeft = new Rect((Screen.width - crosshairTexture.width+ camoffset) / 4, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
+        // positionCrossRight = new Rect(3*(Screen.width - crosshairTexture.width- camoffset) / 4, (Screen.height - crosshairTexture.height) / 2, crosshairTexture.width, crosshairTexture.height);
         for (int i = 0; i < 2; i++)
         {
             for (int j = 0; j < 2; j++)
@@ -99,23 +99,8 @@ public class Player : NetworkBehaviour
     /// </summary>
     void OnGUI()
     {
-        Ray ray = myCamera.ScreenPointToRay(new Vector3(myCamera.pixelWidth / 2, myCamera.pixelHeight / 2, 0));
-        if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, Data.blocklayermask))
-        {
-            var hitPosition = hit.point;
-            var leftPoint = myCamera.WorldToScreenPoint(hitPosition,Camera.MonoOrStereoscopicEye.Left);
-            var rightPoint = myCamera.WorldToScreenPoint(hitPosition,Camera.MonoOrStereoscopicEye.Right);
-            //Debug.Log(leftPoint + " " + rightPoint+ " "+ myCamera.pixelWidth, this);
-            var leftPos = new Vector2(leftPoint.x/myCamera.pixelWidth* (Screen.width / 2f), leftPoint.y / myCamera.pixelHeight * (Screen.height));
-            var rightPos = new Vector2(rightPoint.x/myCamera.pixelWidth* (Screen.width / 2f)+Screen.width/2f, rightPoint.y / myCamera.pixelHeight * (Screen.height));
-            
-            var leftRect = new Rect(leftPos, crossHairBounds);
-            var rightRect = new Rect(rightPos, crossHairBounds);
-            GUI.DrawTexture(leftRect, crosshairTexture);
-            GUI.DrawTexture(rightRect, crosshairTexture);
-            //Debug.Log(":" + myCamera.pixelWidth + " " + Screen.width);
-        }
-        //GUI.DrawTexture(positionCrossLeft, crosshairTexture);
+        
+        GUI.DrawTexture(crosshairPosition, crosshairTexture);
         //GUI.DrawTexture(positionCrossRight, crosshairTexture);
     }
 
