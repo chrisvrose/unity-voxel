@@ -1,25 +1,39 @@
 # unity-voxel
 
-Available here: [vox.kekvrose.me](https://vox.kekvrose.me)
+A small voxel-like cube-based sandbox VR game that supports multiplayer.
 
-A try of Unity.
-The name is not entirely valid, as polygons are used, but the basic unit of the world is a block (world-wise).
-Essentially a wannabe Minecraft clone.
 
+## Screenshots
+### VR Disabled version
 ![unity-voxel](https://kekvrose.me/static/projects/screenshots/unity-voxel.png)
+
+### VR Enabled version
+#### Blocks
+![Blocks](https://kekvrose.me/static/projects/screenshots/unity-voxel-vr-1.png)
+#### Building a small dirt house
+![Building a small dirt house](https://kekvrose.me/static/projects/screenshots/unity-voxel-vr-2.png)
+#### 3 Player multiplayer session
+![3 Player multiplayer session](https://kekvrose.me/static/projects/screenshots/unity-voxel-vr-3.png)
 
 # Features
 
 - [X] Infinite Terrain
 - [X] Player Block Interaction
-- [X] Faster Chunk renders
-- [ ] Inventory Management? 
+- [X] Chunk Based Generation
+- [X] VR Support
+- [X] Distance based Interest Management
 
-# Recent Changes
+## Currently supported VR sets
 
-- Removed unneccesary components to reduce memory consumption
-- (BUG) Wrong block drops
+- MockHMD
+- Oculus
+- OpenVR
 
 # Building
 
 Check the Releases to obtain a binary, or just clone this and add it to Unity (2019.4.8f1) and Build.
+
+## Dependencies
+
+- Unity VR Toolkit
+- Mirror Networking (Included)
