@@ -1,13 +1,12 @@
 # unity-voxel
 
-A small voxel-like cube-based sandbox VR game that supports multiplayer.
-
+A small voxel-like cube-based sandbox VR game that supports multiplayer, using the Mirror networking Framework.
 
 ## Screenshots
-### VR Disabled version
+### VR Disabled version (`novr` branch)
 ![unity-voxel](https://kekvrose.me/static/projects/screenshots/unity-voxel.png)
 
-### VR Enabled version
+### VR Enabled version (`vr` branch)
 #### Blocks
 ![Blocks](https://kekvrose.me/static/projects/screenshots/unity-voxel-vr-1.png)
 #### Building a small dirt house
